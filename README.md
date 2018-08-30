@@ -18,6 +18,14 @@ On the other hand, developers can respond to tickets in the following ways:
 	- Doing
 	- Done
 	- On hold
+
 in order to show users whether or not an issue is being worked on.
 
 Any newly submitted tickets will have their status atuomatically set to 'Reviewing' until a developer checks out the ticket and decides whether or not to actively work on the issue. If developers agree to work on an issue, they will change the status to 'To do' and continue to update users by commenting in the ticket until the issue is resolved. If developers feels that an issue is of less importance, it will be put 'On hold'. However, users can still upvote tickets that are put 'On hold' if they think otherwise. Furthermore, if a ticket's upvote exceeds a certain threshold its status will automatically change to 'To do' and all developers will be notified of this change. Each ticket will have their individual threshold which can be changed by developers.
+
+## Features
+### Existing features
+To be updated.
+
+### Features to implement
+- User authentication: as some features will be limited to registered users, user authentication will be the first to be implemented. It should allow users to be registered and logged into the website. Features such as submitting new tickets to issue tracker should only be available to authenticated users.
