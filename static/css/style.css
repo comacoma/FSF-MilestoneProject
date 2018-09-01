@@ -1,0 +1,12 @@
+.register-text {
+    text-align: right;
+}
+.top-margin {
+    margin-top: 70px;
+}
+
+@media screen and (min-width: 991px) {
+    .register-text {
+        font-size: 90%;
+    }
+}
