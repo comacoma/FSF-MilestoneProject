@@ -6,6 +6,7 @@
 {% block content %}
     <div class="container">
         <h1>Login Page</h1>
+        <p>Login using your username or email</p>
         <form method="POST">
             {% csrf_token %}
             {{ login_form | as_bootstrap }}
