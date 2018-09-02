@@ -11,5 +11,6 @@
             {{ login_form | as_bootstrap }}
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
     </div>
 {% endblock %}
