@@ -33,10 +33,10 @@
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Issue Tracker</a>
+                    <a class="nav-link" href="{% url 'issuetrackerhome' %}">Issue Tracker</a>
                 </li>
             </ul>
-            
+
             <ul class="navbar-nav">
             {% if user.is_authenticated %}
                 <li class="nav-item">
