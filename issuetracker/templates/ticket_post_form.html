@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap_tags %}
+
+{% block page_title %}Issue Tracker - Submit New Ticket{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Issue Tracker - Submit New Ticket</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form | as_bootstrap }}
+            <p>By {{ author }}</p>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}

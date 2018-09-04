@@ -4,7 +4,9 @@
 
 {% block content %}
     <div class="container">
-        <h1>Issue Tracker - Home Page</h1>
-        
+        <h1>
+            Issue Tracker - Home Page
+        </h1>
+        <a href="{% url 'submitnewticket' %}" class="btn btn-success float-right">Submit New Ticket</a>
     </div>
 {% endblock %}
