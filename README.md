@@ -26,6 +26,7 @@ Any newly submitted tickets will have their status automatically set to 'Reviewi
 ## Features
 ### Existing features
 - User authentication: as some features will be limited to registered users, user authentication will be the first to be implemented. It should allow users to be registered and logged into the website. Features such as submitting new tickets to issue tracker should only be available to authenticated users.
+	- User login and registration use custom views and templates in which the code are referred from course material. On the other hand, other user authentication features such as password changes and password reset use views as provided by Django, albeit using custom templates.
 
 ### Features to implement
 - Issue tracker: the focus of this project, which will be split into the following features:
