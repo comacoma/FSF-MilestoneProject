@@ -6,7 +6,7 @@ from django.urls import reverse
 class Ticket(models.Model):
     BUG = 'T1'
     FEATURE_REQUEST = 'T2'
-    CATEGORY = (
+    TYPE = (
         (BUG, 'Bug'),
         (FEATURE_REQUEST, 'Feature Request'),
     )
@@ -25,7 +25,7 @@ class Ticket(models.Model):
     )
 
     title = models.CharField(max_length=50, blank=False)
-    type = models.CharField(max_length=2, choices=CATEGORY, default=BUG)
+    type = models.CharField(max_length=2, choices=TYPE, default=BUG)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
