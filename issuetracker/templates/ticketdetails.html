@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Issue Tracker - Ticket Details{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            {{ ticket.title }}
+            <small class="text-muted">by {{ ticket.author }}</small>
+        </h1>
+        <br>
+        <p>{{ ticket.content }}</p>
+    </div>
+{% endblock %}

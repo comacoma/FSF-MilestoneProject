@@ -4,6 +4,10 @@
 .top-margin {
     margin-top: 70px;
 }
+.table-link {
+    text-decoration: none;
+    color: #000;
+}
 
 @media screen and (min-width: 991px) {
     .register-text {

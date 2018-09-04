@@ -1,13 +1,38 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import TicketPostForm
+from .models import Ticket, Comment
+from .forms import TicketSubmitForm
 
 # Create your views here.
-def issuetrackerhome(request):
-    return render(request, "issue_tracker_home.html")
+def issue_tracker_home(request):
+    tickets = Ticket.objects.all().order_by('-submission_date')
+    return render(request, "issuetrackerhome.html", {'tickets': tickets})
 
 @login_required
-def submitnewticket(request):
-    form = TicketPostForm
+def submit_new_ticket(request):
+    """
+    A view that displays the form for submitting new ticket.
+    User will only need to fill in category of ticket, title and
+    content in order to submit a ticket as other attributes can and should
+    be adjusted after a ticket entity is created.
+    """
+
+    authorid = request.user.id if request.user.is_authenticated else None
     author = request.user.username if request.user.is_authenticated else None
-    return render(request, "ticket_post_form.html", {'form': form, 'author': author})
+    if request.method == "POST":
+        form = TicketSubmitForm(request.POST)
+        if form.is_valid():
+            ticket = form.save()
+            return redirect(ticket_details, ticket.id)
+    else:
+        form = TicketSubmitForm(initial={'author': authorid})
+    return render(request, "ticketpostform.html", {'form': form, 'author': author})
+
+def ticket_details(request, pk):
+    """
+    A view that displays the details of a particular ticket,
+    as well as providing area for fellow users to comment.
+    """
+
+    ticket = get_object_or_404(Ticket, pk=pk)
+    return render(request, 'ticketdetails.html', {'ticket': ticket})

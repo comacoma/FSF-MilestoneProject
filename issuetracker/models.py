@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 # Create your models here.
 class Ticket(models.Model):
@@ -36,6 +37,9 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('ticket_details', args=[str(self.id)])
 
 class Comment(models.Model):
     ticket = models.ForeignKey(
