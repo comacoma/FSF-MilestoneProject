@@ -3,10 +3,14 @@ from django.contrib.auth.decorators import login_required
 from .models import Ticket, Comment
 from .forms import TicketSubmitForm, CommentPostForm
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 # Create your views here.
 def issue_tracker_home(request):
     tickets = Ticket.objects.all().order_by('-submission_date')
+    paginator = Paginator(tickets, 20)
+    page = request.GET.get('page')
+    tickets = paginator.get_page(page)
     return render(request, "issuetrackerhome.html", {'tickets': tickets})
 
 @login_required

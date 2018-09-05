@@ -6,9 +6,42 @@
 {% block content %}
 <div class="container">
     <h1>
-            Issue Tracker - Home Page
-        </h1>
-    <a href="{% url 'submit_new_ticket' %}" class="btn btn-success float-right">Submit New Ticket</a>
+        Issue Tracker - Home Page
+        <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text float-right">Submit New Ticket</a>
+    </h1>
+    <div>
+        <ul class="pagination">
+            {% if tickets.has_previous %}
+            <li class="page-item">
+                <a href="?page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="?page={{ tickets.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+            </li>
+            {% endif %}
+
+            {% for num in tickets.paginator.page_range %}
+                {% if tickets.number == num %}
+                <li class="page-item">
+                    <a class="page-link"><strong>{{ num }}</strong></a>
+                </li>
+                {% elif num > tickets.number|add:'-5' and num < tickets.number|add:'5' %}
+                <li class="page-item">
+                    <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if tickets.has_next %}
+            <li class="page-item">
+                <a href="?page={{ tickets.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="?page={{ tickets.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
     <table class="table table-hover">
         <thead>
             <tr class="d-flex">
