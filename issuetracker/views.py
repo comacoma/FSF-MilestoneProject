@@ -64,3 +64,21 @@ def edit_ticket(request, pk):
     else:
         form = TicketSubmitForm(instance=ticket, initial={'last_modified': datetime.now})
     return render(request, 'ticketeditform.html', {'form': form, 'ticket': ticket})
+
+def edit_comment(request, ticketpk, commentpk):
+    """
+    A view that allows user to edit comment they posted
+    on a particular ticket.
+    """
+
+    ticket = get_object_or_404(Ticket, pk=ticketpk)
+    comment = get_object_or_404(Comment, pk=commentpk)
+
+    if request.method == "POST":
+        form = CommentPostForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect(ticket_details, ticket.pk)
+    else:
+        form = CommentPostForm(instance=comment)
+    return render(request, 'commenteditform.html', {'form': form, 'ticket': ticket})
