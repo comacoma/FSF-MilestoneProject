@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% load bootstrap_tags %}
-{% block ajax_script %}
-    <script type="text/javascript">
-    // using jQuery
-    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    </script>
-{% endblock %}
+{% load tz %}
 
 {% block page_title %}Issue Tracker - Ticket Details{% endblock %}
 
@@ -25,8 +20,8 @@
             <p class="card-text">{{ ticket.content | linebreaks }}</p>
         </div>
         <div class="card-footer">
-            <p>Created On: {{ ticket.submission_date }}</p>
-            <p>Last Modified: {{ ticket.last_modified }}</p>
+            <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
+            <p>Last Modified: {{ ticket.last_modified | utc  }} UTC</p>
         </div>
     </div>
 
@@ -49,7 +44,7 @@
         {% else %}
         <div class="card-header">
         {% endif %}
-            {{ comment.author.username }} @ {{ comment.comment_date }}
+            {{ comment.author.username }} @ {{ comment.comment_date | utc }} UTC
             {% if user.username == comment.author.username %}
                 <a href="{% url 'edit_comment' ticket.id comment.id %}" class="float-right text-white">Edit</a>
             {% endif %}

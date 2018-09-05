@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load tz %}
 
 {% block page_title %}Issue Tracker - Home Page{% endblock %}
 
@@ -16,7 +17,7 @@
                 <th class="col-1">Author</th>
                 <th class="col-1">Status</th>
                 <th class="col-1">Upvote</th>
-                <th class="col-2">Submission Date</th>
+                <th class="col-2">Submission Date(UTC)</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +28,7 @@
                 <td class="col-1">{{ ticket.author }}</td>
                 <td class="col-1">{{ ticket.get_status_display }}</td>
                 <td class="col-1">{{ ticket.upvote }}</td>
-                <td class="col-2">{{ ticket.submission_date }}</td>
+                <td class="col-2">{{ ticket.submission_date | utc }} </td>
             </tr>
             {% endfor %}
         </tbody>

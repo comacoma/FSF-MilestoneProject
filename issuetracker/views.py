@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Ticket, Comment
 from .forms import TicketSubmitForm, CommentPostForm
-from datetime import datetime
+from django.utils import timezone
 
 # Create your views here.
 def issue_tracker_home(request):
@@ -62,7 +62,7 @@ def edit_ticket(request, pk):
             ticket = form.save()
             return redirect(ticket_details, ticket.pk)
     else:
-        form = TicketSubmitForm(instance=ticket, initial={'last_modified': datetime.now})
+        form = TicketSubmitForm(instance=ticket, initial={'last_modified': timezone.now})
     return render(request, 'ticketeditform.html', {'form': form, 'ticket': ticket})
 
 def edit_comment(request, ticketpk, commentpk):

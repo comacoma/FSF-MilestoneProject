@@ -19,8 +19,8 @@
             <p class="card-text">{{ ticket.content | linebreaks }}</p>
         </div>
         <div class="card-footer">
-            <p>Created On: {{ ticket.submission_date }}</p>
-            <p>Last Modified: {{ ticket.last_modified }}</p>
+            <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
+            <p>Last Modified: {{ ticket.last_modified | utc }} UTC</p>
         </div>
     </div>
 
