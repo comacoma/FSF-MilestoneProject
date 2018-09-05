@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from datetime import datetime
 
 # Create your models here.
 class Ticket(models.Model):
@@ -31,8 +32,10 @@ class Ticket(models.Model):
         on_delete = models.PROTECT,
     )
     content = models.TextField()
-    submission_date = models.DateTimeField(auto_now_add=True)
+    submission_date = models.DateTimeField(default=datetime.now)
+    last_modified = models.DateTimeField(blank=True, null=True, default=datetime.now)
     status = models.CharField(max_length=2, choices=STATUS, default=REVIEWING)
+    upvote = models.IntegerField(default=0)
     threshold = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -51,4 +54,7 @@ class Comment(models.Model):
         on_delete = models.PROTECT,
     )
     content = models.TextField()
-    comment_date = models.DateTimeField(auto_now_add=True)
+    comment_date = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return "{0} @ {1} ON {2}".format(self.author.username, self.comment_date.strftime('%Y-%m-%d %H:%M:%S'), self.ticket.title)

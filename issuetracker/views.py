@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Ticket, Comment
-from .forms import TicketSubmitForm
+from .forms import TicketSubmitForm, CommentPostForm
+from datetime import datetime
 
 # Create your views here.
 def issue_tracker_home(request):
@@ -34,5 +35,32 @@ def ticket_details(request, pk):
     as well as providing area for fellow users to comment.
     """
 
+    authorid = request.user.id if request.user.is_authenticated else None
+
     ticket = get_object_or_404(Ticket, pk=pk)
-    return render(request, 'ticketdetails.html', {'ticket': ticket})
+    comments = Comment.objects.filter(ticket=ticket).order_by('-comment_date')
+
+    if request.method == "POST":
+        form = CommentPostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(ticket_details, ticket.id)
+    else:
+        form = CommentPostForm(initial={'author': authorid, 'ticket': ticket.id})
+    return render(request, 'ticketdetails.html', {'ticket': ticket, 'comments': comments, 'form': form})
+
+def edit_ticket(request, pk):
+    """
+    A view that allows users to edit existing tickets
+    """
+
+    ticket = get_object_or_404(Ticket, pk=pk)
+
+    if request.method == "POST":
+        form = TicketSubmitForm(request.POST, instance=ticket)
+        if form.is_valid():
+            ticket = form.save()
+            return redirect(ticket_details, ticket.pk)
+    else:
+        form = TicketSubmitForm(instance=ticket, initial={'last_modified': datetime.now})
+    return render(request, 'ticketeditform.html', {'form': form, 'ticket': ticket})

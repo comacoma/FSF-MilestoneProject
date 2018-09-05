@@ -11,16 +11,22 @@
     <table class="table table-hover">
         <thead>
             <tr class="d-flex">
-                <th class="col-8">Title</th>
-                <th class="col-2">Author</th>
+                <th class="col-5">Title</th>
+                <th class="col-2">Category</th>
+                <th class="col-1">Author</th>
+                <th class="col-1">Status</th>
+                <th class="col-1">Upvote</th>
                 <th class="col-2">Submission Date</th>
             </tr>
         </thead>
         <tbody>
             {% for ticket in tickets %}
             <tr class="d-flex">
-                <td class="col-8"><a href="{% url 'ticket_details' ticket.id %}" class="table-link">{{ ticket.title }}</a></td>
-                <td class="col-2">{{ ticket.author }}</td>
+                <td class="col-5"><a href="{% url 'ticket_details' ticket.id %}" class="table-link">{{ ticket.title }}</a></td>
+                <td class="col-2">{{ ticket.get_type_display }}</td>
+                <td class="col-1">{{ ticket.author }}</td>
+                <td class="col-1">{{ ticket.get_status_display }}</td>
+                <td class="col-1">{{ ticket.upvote }}</td>
                 <td class="col-2">{{ ticket.submission_date }}</td>
             </tr>
             {% endfor %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap_tags %}
+
+{% block page_title %}Issue Tracker - Edit Ticket{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | as_bootstrap }}
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+    <br>
+    <a href="{% url 'ticket_details' ticket.id%}">Back</a>
+</div>
+{% endblock %}

@@ -1,14 +1,67 @@
 {% extends 'base.html' %}
+{% load bootstrap_tags %}
+{% block ajax_script %}
+    <script type="text/javascript">
+    // using jQuery
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    </script>
+{% endblock %}
 
 {% block page_title %}Issue Tracker - Ticket Details{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>
-            {{ ticket.title }}
-            <small class="text-muted">by {{ ticket.author }}</small>
-        </h1>
-        <br>
-        <p>{{ ticket.content }}</p>
+<div class="container">
+    <div class="card border-primary mb-3 ticket-content">
+        <div class="card-header">
+            <h1>
+                {{ ticket.title }}
+                <small class="text-muted small-text">by {{ ticket.author }}</small>
+                {% if user.username == ticket.author.username %}
+                <a href="{% url 'edit_ticket' ticket.id %}" class="float-right">Edit</a>
+                {% endif %}
+            </h1>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ ticket.content | linebreaks }}</p>
+        </div>
+        <div class="card-footer">
+            <p>Created On: {{ ticket.submission_date }}</p>
+            <p>Last Modified: {{ ticket.last_modified }}</p>
+        </div>
     </div>
+
+    {% if user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | as_bootstrap }}
+        <button class="btn btn-primary" type="submit">Post New Comment</button>
+    </form>
+    {% endif %}
+
+    <br>
+
+    {% for comment in comments %}
+    <div class="card border-info mb-3">
+        {% if comment.author.is_staff %}
+        <div class="card-header bg-info text-white">
+        {% elif user.username == comment.author.username %}
+        <div class="card-header bg-primary text-white">
+        {% else %}
+        <div class="card-header">
+        {% endif %}
+            {{ comment.author.username }} @ {{ comment.comment_date }}
+            {% if user.username == comment.author.username %}
+                {% if user.is_staff %}
+                <button class="btn btn-outline-info btn-sm float-right text-white comment-edit" id="{{ comment.id }}">Edit</button>
+                {% else %}
+                <button class="btn btn-outline-primary btn-sm float-right text-white comment-edit" id="{{ comment.id }}">Edit</button>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <span class="card-text comment-body" id="comment_{{ comment.id }}">{{ comment.content | linebreaks }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -8,6 +8,12 @@
     text-decoration: none;
     color: #000;
 }
+.ticket-content {
+    min-height: 360px;
+}
+.small-text {
+    font-size: 50%;
+}
 
 @media screen and (min-width: 991px) {
     .register-text {
