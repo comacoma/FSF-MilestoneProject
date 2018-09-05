@@ -35,6 +35,40 @@
 
     <br>
 
+    <div>
+        <ul class="pagination">
+            {% if comments.has_previous %}
+            <li class="page-item">
+                <a href="?page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="?page={{ comments.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+            </li>
+            {% endif %}
+
+            {% for num in comments.paginator.page_range %}
+                {% if comments.number == num %}
+                <li class="page-item">
+                    <a class="page-link"><strong>{{ num }}</strong></a>
+                </li>
+                {% elif num > comments.number|add:'-5' and num < comments.number|add:'5' %}
+                <li class="page-item">
+                    <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if comments.has_next %}
+            <li class="page-item">
+                <a href="?page={{ comments.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="?page={{ comments.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
     {% for comment in comments %}
     <div class="card border-info mb-3">
         {% if comment.author.is_staff %}

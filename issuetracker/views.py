@@ -43,6 +43,9 @@ def ticket_details(request, pk):
 
     ticket = get_object_or_404(Ticket, pk=pk)
     comments = Comment.objects.filter(ticket=ticket).order_by('-comment_date')
+    paginator = Paginator(comments, 10)
+    page = request.GET.get('page')
+    comments = paginator.get_page(page)
 
     if request.method == "POST":
         form = CommentPostForm(request.POST)
