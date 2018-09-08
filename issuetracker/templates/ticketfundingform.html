@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load bootstrap_tags %}
+{% load tz %}
+
+{% block page_title %}Issue Tracker - Funding for Feature Request{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card border-primary mb-3 ticket-content">
+        <div class="card-header">
+            <h1>
+                {{ ticket.title }}
+                <small class="text-muted small-text">by {{ ticket.author }}</small>
+                {% if user.username == ticket.author.username %}
+                <a href="{% url 'edit_ticket' ticket.id %}" class="float-right">Edit</a>
+                {% endif %}
+            </h1>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ ticket.content | linebreaks }}</p>
+        </div>
+        <div class="card-footer">
+            <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
+            <p>Last Modified: {{ ticket.last_modified | utc }} UTC</p>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | as_bootstrap }}
+        <button class="btn btn-primary" type="submit">Submit Fund</button>
+    </form>
+    <br>
+    <a href="{% url 'ticket_details' ticket.id%}">Back</a>
+</div>
+{% endblock %}

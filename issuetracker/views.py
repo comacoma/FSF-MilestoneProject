@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Ticket, Comment
-from .forms import TicketSubmitForm, CommentPostForm
+from .models import Ticket, Comment, Fund
+from .forms import TicketSubmitForm, CommentPostForm, FundSubmitForm
 from django.utils import timezone
 from django.core.paginator import Paginator
 
@@ -46,6 +46,7 @@ def ticket_details(request, pk):
     paginator = Paginator(comments, 10)
     page = request.GET.get('page')
     comments = paginator.get_page(page)
+    upvoted_user = ticket.upvote_user.all()
 
     if request.method == "POST":
         form = CommentPostForm(request.POST)
@@ -54,7 +55,15 @@ def ticket_details(request, pk):
             return redirect(ticket_details, ticket.id)
     else:
         form = CommentPostForm(initial={'author': authorid, 'ticket': ticket.id})
-    return render(request, 'ticketdetails.html', {'ticket': ticket, 'comments': comments, 'form': form})
+    return render(
+        request,
+        'ticketdetails.html',
+        {
+            'ticket': ticket,
+            'comments': comments,
+            'form': form,
+            'upvoted_user': upvoted_user
+        })
 
 def edit_ticket(request, pk):
     """
@@ -89,3 +98,19 @@ def edit_comment(request, ticketpk, commentpk):
     else:
         form = CommentPostForm(instance=comment)
     return render(request, 'commenteditform.html', {'form': form, 'ticket': ticket})
+
+@login_required
+def upvote(request, pk):
+    ticket = get_object_or_404(Ticket, pk=pk)
+    if ticket.upvote_user.filter(id=request.user.id).exists():
+        ticket.upvote_user.remove(request.user)
+        return redirect(ticket_details, ticket.pk)
+    else:
+        ticket.upvote_user.add(request.user)
+        return redirect(ticket_details, ticket.pk)
+
+@login_required
+def fund(request, pk):
+    ticket = get_object_or_404(Ticket, pk=pk)
+    form = FundSubmitForm()
+    return render(request, 'ticketfundingform.html', {'ticket': ticket, 'form': form})

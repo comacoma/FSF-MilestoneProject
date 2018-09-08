@@ -35,7 +35,13 @@ class Ticket(models.Model):
     submission_date = models.DateTimeField(default=timezone.now)
     last_modified = models.DateTimeField(blank=True, null=True, default=timezone.now)
     status = models.CharField(max_length=2, choices=STATUS, default=REVIEWING)
-    upvote = models.IntegerField(default=0)
+    upvote_user = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name = 'upvoted',
+        blank = True,
+        default = None
+    )
+    upvote_fund = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, default=0)
     threshold = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -58,3 +64,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return "{0} @ {1} ON {2}".format(self.author.username, self.comment_date.strftime('%Y-%m-%d %H:%M:%S'), self.ticket.title)
+
+class Fund(models.Model):
+    ticket = models.ForeignKey(
+        'Ticket',
+        on_delete = models.PROTECT,
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete = models.PROTECT,
+    )
+    fund = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, default=0)
+    date = models.DateTimeField(default=timezone.now)

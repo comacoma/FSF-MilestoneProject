@@ -7,4 +7,6 @@ urlpatterns = [
     path('ticket/<int:pk>/', ticket_details, name="ticket_details"),
     path('ticket/<int:pk>/edit/', edit_ticket, name="edit_ticket"),
     path('ticket/<int:ticketpk>/comment/<int:commentpk>/edit/', edit_comment, name="edit_comment"),
+    path('ticket/<int:pk>/upvote/', upvote, name="upvote"),
+    path('ticket/<int:pk>/fund/', fund, name="fund"),
 ]

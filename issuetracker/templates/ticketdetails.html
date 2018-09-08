@@ -20,8 +20,31 @@
             <p class="card-text">{{ ticket.content | linebreaks }}</p>
         </div>
         <div class="card-footer">
-            <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
-            <p>Last Modified: {{ ticket.last_modified | utc  }} UTC</p>
+            <div class="row">
+                <div class="col-6">
+                    {% if ticket.type == "T1" %}
+                    <p>
+                        Upvote: {{ ticket.upvote_user.count }}
+                        {% if user in upvoted_user %}
+                        <a href="{% url 'upvote' ticket.id %}"><i class="fas fa-thumbs-up fa-2x"></i></a>
+                        {% else %}
+                        <a href="{% url 'upvote' ticket.id %}"><i class="far fa-thumbs-up fa-2x"></i></a>
+                        {% endif %}
+                    </p>
+                    {% else %}
+                    <p>
+                        Current Funding: £{{ ticket.upvote_fund }}
+                        <a href="{% url 'fund' ticket.id %}"><i class="fas fa-donate fa-2x"></i></a>
+                    </p>
+                    {% endif %}
+                    <p>Status: {{ ticket.get_status_display }}</p>
+                </div>
+
+                <div class="col-6 text-right">
+                    <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
+                    <p>Last Modified: {{ ticket.last_modified | utc  }} UTC</p>
+                </div>
+            </div>
         </div>
     </div>
 
