@@ -60,7 +60,11 @@
                 <td class="col-2">{{ ticket.get_type_display }}</td>
                 <td class="col-1">{{ ticket.author }}</td>
                 <td class="col-1">{{ ticket.get_status_display }}</td>
-                <td class="col-1">{{ ticket.upvote }}</td>
+                {% if ticket.type == "T1" %}
+                <td class="col-1">{{ ticket.upvote_user.count }}</td>
+                {% else %}
+                <td class="col-1">£{{ ticket.upvote_fund }}</td>
+                {% endif %}
                 <td class="col-2">{{ ticket.submission_date | utc }} </td>
             </tr>
             {% endfor %}
