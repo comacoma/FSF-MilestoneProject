@@ -64,3 +64,10 @@ class UpdateStatusForm(forms.ModelForm):
         fields = (
             'status',
         )
+
+class UpdateThresholdForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = (
+            'threshold',
+        )

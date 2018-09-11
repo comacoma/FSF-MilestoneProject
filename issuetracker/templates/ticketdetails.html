@@ -37,18 +37,56 @@
                         <a href="{% url 'fund' ticket.id %}"><i class="fas fa-donate fa-2x"></i></a>
                     </p>
                     {% endif %}
+
                     <p>
                         {% if user.is_staff %}
-                        Status:
                         <form action="{% url 'update_status' ticket.id %}" method="POST">
                             {% csrf_token %}
-                            {{ status | as_bootstrap }}
-                            <button class="btn btn-primary" type="submit">Update Status</button>
+                            <div class="form-inline">
+                                <label for="status">{{ status.status.label }}:</label>
+                                <select class="custom-select" name="status" id="status" class="side-margin">
+                                    {% for x, y in status.fields.status.choices %}
+                                    <option value="{{ x }}" {% if ticket.status == x %}selected{% endif %}>{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-primary" type="submit">Update Status</button>
+                            </div>
                         </form>
                         {% else %}
                         Status: {{ ticket.get_status_display }}
                         {% endif %}
                     </p>
+
+                    <p>
+                        {% if user.is_staff %}
+                        <form action="{% url 'update_threshold' ticket.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-inline">
+                                <label for="threshold">
+                                    {% if ticket.type == "T1" %}
+                                        {{ threshold.threshold.label }}:
+                                    {% else %}
+                                        {{ threshold.threshold.label }}(in GBP £):
+                                    {% endif %}
+                                </label>
+                                <input type="text" name="threshold" value="{{ threshold.threshold.value }}" class="side-margin">
+                                <button class="btn btn-primary" type="submit">Update Threshold</button>
+                            </div>
+                        </form>
+                        {% else %}
+                        Threshold:
+                            {% if ticket.threshold == None %}
+                                To Be Updated
+                            {% else %}
+                                {% if ticket.type == "T1" %}
+                                    {{ ticket.threshold }}
+                                {% else %}
+                                    £{{ ticket.threshold }}.00
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </p>
+
                 </div>
 
                 <div class="col-6 text-right">
