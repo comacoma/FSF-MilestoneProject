@@ -37,7 +37,18 @@
                         <a href="{% url 'fund' ticket.id %}"><i class="fas fa-donate fa-2x"></i></a>
                     </p>
                     {% endif %}
-                    <p>Status: {{ ticket.get_status_display }}</p>
+                    <p>
+                        {% if user.is_staff %}
+                        Status:
+                        <form action="{% url 'update_status' ticket.id %}" method="POST">
+                            {% csrf_token %}
+                            {{ status | as_bootstrap }}
+                            <button class="btn btn-primary" type="submit">Update Status</button>
+                        </form>
+                        {% else %}
+                        Status: {{ ticket.get_status_display }}
+                        {% endif %}
+                    </p>
                 </div>
 
                 <div class="col-6 text-right">

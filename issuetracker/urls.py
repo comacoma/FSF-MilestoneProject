@@ -9,4 +9,5 @@ urlpatterns = [
     path('ticket/<int:ticketpk>/comment/<int:commentpk>/edit/', edit_comment, name="edit_comment"),
     path('ticket/<int:pk>/upvote/', upvote, name="upvote"),
     path('ticket/<int:pk>/fund/', fund, name="fund"),
+    path('ticket/<int:pk>/update_status/', update_status, name="update_status"),
 ]

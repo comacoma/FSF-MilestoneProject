@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Ticket, Comment, Fund
-from .forms import TicketSubmitForm, CommentPostForm, FundSubmitForm
+from .forms import TicketSubmitForm, CommentPostForm, FundSubmitForm, UpdateStatusForm
 from django.utils import timezone
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 
 # Create your views here.
 def issue_tracker_home(request):
@@ -42,6 +45,7 @@ def ticket_details(request, pk):
     authorid = request.user.id if request.user.is_authenticated else None
 
     ticket = get_object_or_404(Ticket, pk=pk)
+    status = UpdateStatusForm(instance=ticket)
     comments = Comment.objects.filter(ticket=ticket).order_by('-comment_date')
     paginator = Paginator(comments, 10)
     page = request.GET.get('page')
@@ -62,7 +66,8 @@ def ticket_details(request, pk):
             'ticket': ticket,
             'comments': comments,
             'form': form,
-            'upvoted_user': upvoted_user
+            'upvoted_user': upvoted_user,
+            'status': status,
         })
 
 def edit_ticket(request, pk):
@@ -101,6 +106,9 @@ def edit_comment(request, ticketpk, commentpk):
 
 @login_required
 def upvote(request, pk):
+    """
+    A functional view that adds or remove a user's upvote to a ticket.
+    """
     ticket = get_object_or_404(Ticket, pk=pk)
     if ticket.upvote_user.filter(id=request.user.id).exists():
         ticket.upvote_user.remove(request.user)
@@ -111,6 +119,24 @@ def upvote(request, pk):
 
 @login_required
 def fund(request, pk):
+    """
+    A view that displays a form for paying towards a feature request ticket.
+    """
     ticket = get_object_or_404(Ticket, pk=pk)
     form = FundSubmitForm()
     return render(request, 'ticketfundingform.html', {'ticket': ticket, 'form': form})
+
+@staff_member_required
+def update_status(request, pk):
+    ticket = get_object_or_404(Ticket, pk=pk)
+
+    try:
+        if request.method == "POST":
+            status = UpdateStatusForm(request.POST, instance=ticket)
+            if status.is_valid():
+                status.save()
+                return redirect(ticket_details, ticket.pk)
+    except Exception as e:
+        print(e)
+        messages.error(request, "An error has occurred and status was not update. Please check log.")
+        return redirect(ticket_details, ticket.pk)
