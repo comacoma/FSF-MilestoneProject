@@ -2,3 +2,4 @@
 __pycache__
 sent_emails
 env.py
+venv/
