@@ -33,10 +33,7 @@ class CommentPostForm(forms.ModelForm):
             'content': 'New Comment',
         }
 
-class FundSubmitForm(forms.ModelForm):
-    MOHTH_CHOICES = [ (i, i) for i in range(1,13)]
-    YEAR_CHOICES = [ (i, i) for i in range(2017, 2037)]
-
+class FundingForm(forms.ModelForm):
     class Meta:
         model = Fund
         fields = (
@@ -51,6 +48,10 @@ class FundSubmitForm(forms.ModelForm):
         labels = {
             'fund': 'How much would you like to put towards this feature request? (in GBP £)',
         }
+
+class CardDetailForm(forms.Form):
+    MOHTH_CHOICES = [ (i, i) for i in range(1,13)]
+    YEAR_CHOICES = [ (i, i) for i in range(2018, 2037)]
 
     credit_card_number = forms.CharField(label='Credit card number', required=False)
     cvv = forms.CharField(label='Security code (CVV)', required=False)

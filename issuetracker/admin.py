@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ticket, Comment
+from .models import Ticket, Comment, Fund
 
 # Register your models here.
 class CommentInline(admin.TabularInline):
@@ -12,3 +12,4 @@ class TicketAdmin(admin.ModelAdmin):
 
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(Comment)
+admin.site.register(Fund)

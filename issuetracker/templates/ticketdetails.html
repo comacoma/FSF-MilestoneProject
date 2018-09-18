@@ -44,7 +44,7 @@
                             {% csrf_token %}
                             <div class="form-inline">
                                 <label for="status">{{ status.status.label }}:</label>
-                                <select class="custom-select" name="status" id="status" class="side-margin">
+                                <select class="custom-select side-margin" name="status" id="status">
                                     {% for x, y in status.fields.status.choices %}
                                     <option value="{{ x }}" {% if ticket.status == x %}selected{% endif %}>{{ y }}</option>
                                     {% endfor %}

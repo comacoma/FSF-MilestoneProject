@@ -74,5 +74,8 @@ class Fund(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
     )
-    fund = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True, default=0)
-    date = models.DateTimeField(default=timezone.now)
+    fund = models.DecimalField(max_digits=8, decimal_places=2, blank=False, null=False, default=0)
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return "£{0} by {1} ON {2}".format(self.fund, self.user.username, self.date.strftime('%Y-%m-%d %H:%M:%S'))

@@ -3,10 +3,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Ticket, Comment, Fund
-from .forms import TicketSubmitForm, CommentPostForm, FundSubmitForm, UpdateStatusForm, UpdateThresholdForm
+from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpResponse
+from django.conf import settings
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET
 
 # Create your views here.
 def issue_tracker_home(request):
@@ -123,12 +127,56 @@ def upvote(request, pk):
 @login_required
 def fund(request, pk):
     """
-    A view that displays a form for paying towards a feature request ticket.
+    A view that displays a form for paying towards a feature request ticket, whil
+    also handling the payment process using Stripe API
     """
 
     ticket = get_object_or_404(Ticket, pk=pk)
-    form = FundSubmitForm()
-    return render(request, 'ticketfundingform.html', {'ticket': ticket, 'form': form})
+
+    if request.method=="POST":
+        funding_form = FundingForm(request.POST)
+        card_detail_form = CardDetailForm(request.POST)
+
+        if funding_form.is_valid() and card_detail_form.is_valid():
+            try:
+                donor = stripe.Charge.create(
+                    amount = int(funding_form.cleaned_data['fund'] * 100),
+                    currency = "GBP",
+                    description = "{0} donation on {1}".format(request.user.email, ticket.title),
+                    card = card_detail_form.cleaned_data['stripe_id'],
+                )
+            except stripe.error.CardError:
+                messages.warning(request, "Your card was declined!")
+
+            if donor.paid:
+                messages.success(request, "Thank you for your donation!")
+                fund = funding_form.save(commit=False)
+                fund.date = timezone.now()
+                fund.save()
+
+                ticket.upvote_fund = ticket.upvote_fund + funding_form.cleaned_data['fund']
+                ticket.save()
+
+                return redirect(ticket_details, ticket.pk)
+            else:
+                messages.warning(request, "Unable to take payment.")
+        else:
+            print(funding_form.errors)
+            print(card_detail_form.errors)
+            messages.warning(request, "We were not able to take payment from the card you provided.")
+    else:
+        funding_form = FundingForm(initial={'user': request.user, 'ticket': ticket})
+        card_detail_form = CardDetailForm()
+
+    return render(
+        request,
+        'ticketfundingform.html',
+        {
+            'ticket': ticket,
+            'funding_form': funding_form,
+            'card_detail_form': card_detail_form,
+            'publishable': settings.STRIPE_PUBLISHABLE,
+        })
 
 @staff_member_required
 def update_status(request, pk):
@@ -147,7 +195,7 @@ def update_status(request, pk):
         return redirect(ticket_details, ticket.pk)
     except Exception as e:
         print(e)
-        messages.error(request, "An error has occurred and status was not updated. Please check log.")
+        messages.warning(request, "An error has occurred and status was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)
 
 @staff_member_required
@@ -167,5 +215,5 @@ def update_threshold(request, pk):
         return redirect(ticket_details, ticket.pk)
     except Exception as e:
         print(e)
-        messages.error(request, "An error has occurred and threshold was not updated. Please check log.")
+        messages.warning(request, "An error has occurred and threshold was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)

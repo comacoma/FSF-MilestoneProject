@@ -19,6 +19,10 @@
     margin-right: 5px;
 }
 
+#credit-card-errors {
+    display: none;
+}
+
 @media screen and (min-width: 991px) {
     .register-text {
         font-size: 90%;
