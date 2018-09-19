@@ -14,6 +14,10 @@ stripe.api_key = settings.STRIPE_SECRET
 
 # Create your views here.
 def issue_tracker_home(request):
+    """
+    A view that displays the home page of issue tracker.
+    """
+
     tickets = Ticket.objects.all().order_by('-submission_date')
     paginator = Paginator(tickets, 20)
     page = request.GET.get('page')
@@ -49,6 +53,22 @@ def ticket_details(request, pk):
     authorid = request.user.id if request.user.is_authenticated else None
 
     ticket = get_object_or_404(Ticket, pk=pk)
+
+    if ticket.type == "T1" and ticket.status == ("S1" or "S5"):
+        if ticket.threshold == None:
+            messages.warning(request, "Threshold level has not been set for this ticket yet.")
+        elif ticket.upvote_user.count() >= ticket.threshold:
+            messages.info(request, "Thank you for your attention, we will begin looking into fixing this bug.")
+            ticket.status = "S2"
+            ticket.save()
+    elif ticket.type == "T2" and ticket.status == ("S1" or "S5"):
+        if ticket.threshold == None:
+            messages.warning(request, "Threshold level has not been set for this ticket yet.")
+        elif ticket.upvote_fund >= ticket.threshold:
+            messages.info(request, "Thank you for the funding, we will begin looking into developing this new feature.")
+            ticket.status = "S2"
+            ticket.save()
+
     status = UpdateStatusForm(instance=ticket)
     threshold = UpdateThresholdForm(instance=ticket)
     comments = Comment.objects.filter(ticket=ticket).order_by('-comment_date')
@@ -127,8 +147,8 @@ def upvote(request, pk):
 @login_required
 def fund(request, pk):
     """
-    A view that displays a form for paying towards a feature request ticket, whil
-    also handling the payment process using Stripe API
+    A view that displays a form for paying towards a feature request ticket, while
+    also handling the payment process using Stripe API.
     """
 
     ticket = get_object_or_404(Ticket, pk=pk)

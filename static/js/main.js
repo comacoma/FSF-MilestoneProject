@@ -1,3 +1,3 @@
 $(document).ready(function() {
-    $('#message').delay(5000).show().slideUp();
+    $('.message').delay(5000).show().slideUp();
 });
