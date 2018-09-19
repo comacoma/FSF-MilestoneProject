@@ -1,30 +1,58 @@
 .register-text {
     text-align: right;
 }
+
 .top-margin {
     margin-top: 70px;
 }
+
 .table-link {
     text-decoration: none;
     color: #000;
 }
+
 .ticket-content {
     min-height: 360px;
 }
+
 .small-text {
     font-size: 50%;
 }
-.side-margin {
-    margin-left: 5px;
-    margin-right: 5px;
+
+.form-input-margin {
+    margin: 5px;
 }
 
 #credit-card-errors {
     display: none;
 }
 
+.full-table {
+    display: none;
+}
+
+.simple-table {
+    display: table;
+}
+
+.header-button, .ticket-edit{
+    float: none;
+}
+
 @media screen and (min-width: 991px) {
     .register-text {
         font-size: 90%;
+    }
+
+    .full-table {
+        display: table;
+    }
+
+    .simple-table {
+        display: none;
+    }
+
+    .header-button, .ticket-edit {
+        float: right;
     }
 }

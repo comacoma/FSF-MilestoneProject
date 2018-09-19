@@ -12,7 +12,7 @@
                 {{ ticket.title }}
                 <small class="text-muted small-text">by {{ ticket.author }}</small>
                 {% if user.username == ticket.author.username %}
-                <a href="{% url 'edit_ticket' ticket.id %}" class="float-right">Edit</a>
+                <a href="{% url 'edit_ticket' ticket.id %}" class="ticket-edit">Edit</a>
                 {% endif %}
             </h1>
         </div>
@@ -21,7 +21,7 @@
         </div>
         <div class="card-footer">
             <div class="row">
-                <div class="col-6">
+                <div class="col-sm-12 col-md-6">
                     {% if ticket.type == "T1" %}
                     <p>
                         Upvote: {{ ticket.upvote_user.count }}
@@ -44,7 +44,7 @@
                             {% csrf_token %}
                             <div class="form-inline">
                                 <label for="status">{{ status.status.label }}:</label>
-                                <select class="custom-select side-margin" name="status" id="status">
+                                <select class="custom-select form-input-margin" name="status" id="status">
                                     {% for x, y in status.fields.status.choices %}
                                     <option value="{{ x }}" {% if ticket.status == x %}selected{% endif %}>{{ y }}</option>
                                     {% endfor %}
@@ -69,7 +69,7 @@
                                         {{ threshold.threshold.label }}(in GBP £):
                                     {% endif %}
                                 </label>
-                                <input type="text" name="threshold" value="{{ threshold.threshold.value }}" class="side-margin">
+                                <input type="text" name="threshold" value="{{ threshold.threshold.value }}" class="form-input-margin">
                                 <button class="btn btn-primary" type="submit">Update Threshold</button>
                             </div>
                         </form>
@@ -89,7 +89,7 @@
 
                 </div>
 
-                <div class="col-6 text-right">
+                <div class="col-sm-12 col-md-6 text-right">
                     <p>Created On: {{ ticket.submission_date | utc }} UTC</p>
                     <p>Last Modified: {{ ticket.last_modified | utc  }} UTC</p>
                 </div>

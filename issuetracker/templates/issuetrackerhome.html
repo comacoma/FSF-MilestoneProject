@@ -7,7 +7,7 @@
 <div class="container">
     <h1>
         Issue Tracker - Home Page
-        <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text float-right">Submit New Ticket</a>
+        <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text header-button">Submit New Ticket</a>
     </h1>
     <div>
         <ul class="pagination">
@@ -42,7 +42,23 @@
             {% endif %}
         </ul>
     </div>
-    <table class="table table-hover">
+
+    <table class="table table-hover simple-table">
+        <thead>
+            <tr class="d-flex">
+                <th class="col">Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr class="d-flex">
+                <td class="col"><a href="{% url 'ticket_details' ticket.id %}" class="table-link">{{ ticket.title }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-hover full-table">
         <thead>
             <tr class="d-flex">
                 <th class="col-5">Title</th>
