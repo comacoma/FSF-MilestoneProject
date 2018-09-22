@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% load tz %}
+{% load helper %}
 
 {% block page_title %}Issue Tracker - Home Page{% endblock %}
 
@@ -7,38 +9,99 @@
 <div class="container">
     <h1>
         Issue Tracker - Home Page
-        <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text header-button">Submit New Ticket</a>
+        <div class="row">
+            <a href="#"class="btn btn-info btn-sm small-text header-button col">View Ticket Ranking/Progress</a>
+            <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text header-button col">Submit New Ticket</a>
+        </div>
     </h1>
+
+    <form method="GET" class="form-inline">
+        {% for field in filter.form %}
+            {{ field.label_tag }}
+            {% render_field field class="form-control form-input-margin" %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary form-control form-input-margin">Filter</button>
+        <a href="{% url 'issue_tracker_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+    </form>
+
     <div>
         <ul class="pagination">
             {% if tickets.has_previous %}
-            <li class="page-item">
-                <a href="?page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
-            </li>
-            <li class="page-item">
-                <a href="?page={{ tickets.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
-            </li>
+                {% if 'title__icontains=' in request.get_full_path or 'type=' in request.get_full_path %}
+                    {% if 'page' in request.get_full_path %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ tickets.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ tickets.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ tickets.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                    </li>
+                {% endif %}
             {% endif %}
 
             {% for num in tickets.paginator.page_range %}
                 {% if tickets.number == num %}
-                <li class="page-item">
-                    <a class="page-link"><strong>{{ num }}</strong></a>
-                </li>
+                    <li class="page-item">
+                        <a class="page-link"><strong>{{ num }}</strong></a>
+                    </li>
                 {% elif num > tickets.number|add:'-5' and num < tickets.number|add:'5' %}
-                <li class="page-item">
-                    <a href="?page={{ num }}" class="page-link">{{ num }}</a>
-                </li>
+                    {% if 'title__icontains' in request.get_full_path or 'type' in request.get_full_path %}
+                        {% if 'page' in request.get_full_path %}
+                            <li class="page-item">
+                                <a href="{{ request.get_full_path | splitpart:0 }}&page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="{{ request.get_full_path }}&page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item">
+                            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 
             {% if tickets.has_next %}
-            <li class="page-item">
-                <a href="?page={{ tickets.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
-            </li>
-            <li class="page-item">
-                <a href="?page={{ tickets.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
-            </li>
+                {% if 'title__icontains=' in request.get_full_path or 'type=' in request.get_full_path %}
+                    {% if 'page' in request.get_full_path %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ tickets.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ tickets.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ tickets.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ tickets.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ tickets.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ tickets.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                    </li>
+                {% endif %}
             {% endif %}
         </ul>
     </div>

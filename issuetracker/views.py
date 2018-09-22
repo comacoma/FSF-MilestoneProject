@@ -2,12 +2,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import Ticket, Comment, Fund
-from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.conf import settings
+from .models import Ticket, Comment, Fund
+from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
+from .filters import TicketFilter
 import stripe
 
 stripe.api_key = settings.STRIPE_SECRET
@@ -19,10 +20,12 @@ def issue_tracker_home(request):
     """
 
     tickets = Ticket.objects.all().order_by('-submission_date')
-    paginator = Paginator(tickets, 20)
+    filter = TicketFilter(request.GET, queryset=tickets)
+    paginator = Paginator(filter.qs, 20)
     page = request.GET.get('page')
     tickets = paginator.get_page(page)
-    return render(request, "issuetrackerhome.html", {'tickets': tickets})
+
+    return render(request, "issuetrackerhome.html", {'tickets': tickets, 'filter': filter})
 
 @login_required
 def submit_new_ticket(request):

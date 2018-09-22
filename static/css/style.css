@@ -39,6 +39,10 @@
     float: none;
 }
 
+.header-button {
+    margin: 5px;
+}
+
 @media screen and (min-width: 991px) {
     .register-text {
         font-size: 90%;
