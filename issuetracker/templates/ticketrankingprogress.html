@@ -10,19 +10,98 @@
             type: 'column'
         },
         title: {
-            text: 'Top 5 Upvoted Bugs'
+            text: 'Top 5 Bugs'
         },
         xAxis: {
-            categories: {{ bug_title | safe }}
+            categories: [
+                {% for item in bug_ranking %}
+                    "{{ item.title }}"
+                    {% if forloop.counter < bug_ranking|length %}, {% endif %}
+                {% endfor %}
+            ]
         },
         yAxis: {
             title: {
                 text: 'Upvote Count'
             }
         },
+        plotOptions: {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function() {
+                            url_string = "{% url 'ticket_details' pk=1%}";
+                            url_string = url_string.slice(0, -2);
+                            location.href= url_string + this.key;
+                        }
+                    }
+                }
+            }
+        },
         series: [{
             name: 'Upvote Count',
-            data: {{ bug_upvote_count }}
+            data: [
+                {% for item in bug_ranking %}
+                    {
+                        y: {{ item.upvote_count }},
+                        name: "{{ item.title }}",
+                        key: "{{ item.id }}"
+                    } {% if forloop.counter < bug_ranking|length %}, {% endif %}
+                {% endfor %}
+            ]
+        }]
+    });
+
+    Highcharts.chart('feature_request_ranking', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Top 5 Feature Request'
+        },
+        xAxis: {
+            categories: [
+                {% for item in feature_request_ranking %}
+                    "{{ item.title }}"
+                    {% if forloop.counter < feature_request_ranking|length %}, {% endif %}
+                {% endfor %}
+            ]
+        },
+        yAxis: {
+            title: {
+                text: 'Funding'
+            },
+            labels: {
+                format: '£{value}'
+            }
+        },
+        plotOptions: {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function() {
+                            url_string = "{% url 'ticket_details' pk=1%}";
+                            url_string = url_string.slice(0, -2);
+                            location.href= url_string + this.key;
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Funding',
+            data: [
+                {% for item in feature_request_ranking %}
+                    {
+                        y: {{ item.upvote_fund }},
+                        name: "{{ item.title }}",
+                        key: "{{ item.id }}",
+                    } {% if forloop.counter < feature_request_ranking|length %}, {% endif %}
+                {% endfor %}
+            ],
+            color: "#65f77d"
         }]
     });
 </script>
@@ -32,6 +111,9 @@
 <div class="container">
     <h1>Issue Tracker - Ticket Rankings and Progress</h1>
 
-    <div id="bug_ranking"></div>
+    <div class="row">
+        <div class="col" id="bug_ranking"></div>
+        <div class="col" id="feature_request_ranking"></div>
+    </div>
 </div>
 {% endblock %}

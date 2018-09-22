@@ -6,6 +6,10 @@
 
 {% block content %}
 <div class="container">
+    <div class="row">
+        <a href="{% url 'ticket_ranking_progress' %}"class="btn btn-info header-button col">View Ticket Ranking/Progress</a>
+        <a href="{% url 'submit_new_ticket' %}" class="btn btn-success header-button col">Submit New Ticket</a>
+    </div>
     <div class="card border-primary mb-3 ticket-content">
         <div class="card-header">
             <h1>

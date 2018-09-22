@@ -39,19 +39,14 @@ def ticket_ranking_progress(request):
         .order_by('-upvote_count') \
         [:5]
 
-    bug_title = list()
-    bug_upvote_count = list()
-
-    for data in bug_ranking:
-        bug_title.append(data.title)
-        bug_upvote_count.append(data.upvote_count)
+    feature_request_ranking = Ticket.objects.filter(type="T2").order_by('-upvote_fund')[:5]
 
     return render(
         request,
         "ticketrankingprogress.html",
         {
-            'bug_title': json.dumps(bug_title),
-            'bug_upvote_count': json.dumps(bug_upvote_count),
+            'bug_ranking': bug_ranking,
+            'feature_request_ranking': feature_request_ranking,
         })
 
 @login_required
