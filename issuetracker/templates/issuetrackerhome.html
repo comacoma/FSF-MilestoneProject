@@ -10,7 +10,7 @@
     <h1>
         Issue Tracker - Home Page
         <div class="row">
-            <a href="#"class="btn btn-info btn-sm small-text header-button col">View Ticket Ranking/Progress</a>
+            <a href="{% url 'ticket_ranking_progress' %}"class="btn btn-info btn-sm small-text header-button col">View Ticket Ranking/Progress</a>
             <a href="{% url 'submit_new_ticket' %}" class="btn btn-success btn-sm small-text header-button col">Submit New Ticket</a>
         </div>
     </h1>

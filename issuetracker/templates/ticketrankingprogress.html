@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Issue Tracker - Ticket Rankings and Progress{% endblock %}
+
+{% block js_body %}
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script>
+    Highcharts.chart('bug_ranking', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Top 5 Upvoted Bugs'
+        },
+        xAxis: {
+            categories: {{ bug_title | safe }}
+        },
+        yAxis: {
+            title: {
+                text: 'Upvote Count'
+            }
+        },
+        series: [{
+            name: 'Upvote Count',
+            data: {{ bug_upvote_count }}
+        }]
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Issue Tracker - Ticket Rankings and Progress</h1>
+
+    <div id="bug_ranking"></div>
+</div>
+{% endblock %}

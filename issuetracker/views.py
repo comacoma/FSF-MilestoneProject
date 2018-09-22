@@ -6,10 +6,12 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.conf import settings
+from django.db.models import Count, Q
 from .models import Ticket, Comment, Fund
 from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
 from .filters import TicketFilter
 import stripe
+import json
 
 stripe.api_key = settings.STRIPE_SECRET
 
@@ -26,6 +28,31 @@ def issue_tracker_home(request):
     tickets = paginator.get_page(page)
 
     return render(request, "issuetrackerhome.html", {'tickets': tickets, 'filter': filter})
+
+def ticket_ranking_progress(request):
+    """
+    A view that displays all data visualizations regarding issue tracker.
+    """
+
+    bug_ranking = Ticket.objects.filter(type="T1") \
+        .annotate(upvote_count=Count('upvote_user')) \
+        .order_by('-upvote_count') \
+        [:5]
+
+    bug_title = list()
+    bug_upvote_count = list()
+
+    for data in bug_ranking:
+        bug_title.append(data.title)
+        bug_upvote_count.append(data.upvote_count)
+
+    return render(
+        request,
+        "ticketrankingprogress.html",
+        {
+            'bug_title': json.dumps(bug_title),
+            'bug_upvote_count': json.dumps(bug_upvote_count),
+        })
 
 @login_required
 def submit_new_ticket(request):
