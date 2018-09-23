@@ -284,4 +284,22 @@ def update_threshold(request, pk):
 
 @staff_member_required
 def ticket_progress(request):
-    return render(request, "ticketprogress.html")
+    """
+    A staff only view where they can log how many hours they have used to
+    tend to tickets.
+    """
+
+    tickets = Ticket.objects.filter(status="S3")
+    mvf = Ticket.objects.order_by('upvote_fund').first()
+
+    return render(
+        request,
+        "ticketprogress.html",
+        {
+            'tickets': tickets,
+            'mvf': mvf,
+        })
+
+@staff_member_required
+def submit_log(request):
+    pass
