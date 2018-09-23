@@ -209,6 +209,7 @@ def fund(request, pk):
             print(funding_form.errors)
             print(card_detail_form.errors)
             messages.warning(request, "We were not able to take payment from the card you provided.")
+            messages.warning(request, funding_form.errors)
     else:
         funding_form = FundingForm(initial={'user': request.user, 'ticket': ticket})
         card_detail_form = CardDetailForm()

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 class Ticket(models.Model):
@@ -74,7 +75,14 @@ class Fund(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
     )
-    fund = models.DecimalField(max_digits=8, decimal_places=2, blank=False, null=False, default=0)
+    fund = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=False,
+        null=False,
+        default=1,
+        validators=[MinValueValidator(1)],
+    )
     date = models.DateTimeField()
 
     def __str__(self):

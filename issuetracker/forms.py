@@ -46,7 +46,7 @@ class FundingForm(forms.ModelForm):
             'ticket': forms.HiddenInput(),
         }
         labels = {
-            'fund': 'How much would you like to put towards this feature request? (in GBP £)',
+            'fund': 'How much would you like to put towards this feature request? (in GBP £/ Minimum: £1.00)',
         }
 
 class CardDetailForm(forms.Form):
