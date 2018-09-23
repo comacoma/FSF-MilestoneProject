@@ -111,6 +111,12 @@
 <div class="container">
     <h1>Issue Tracker - Ticket Rankings and Progress</h1>
 
+    {% if request.user.is_staff %}
+        <div class="row">
+            <a href="{% url 'ticket_progress' %}"class="btn btn-info header-button col">Update/Log Ticket Progress</a>
+        </div>
+    {% endif %}
+
     <div class="row">
         <div class="col" id="bug_ranking"></div>
         <div class="col" id="feature_request_ranking"></div>

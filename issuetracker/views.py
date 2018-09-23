@@ -263,3 +263,7 @@ def update_threshold(request, pk):
         print(e)
         messages.warning(request, "An error has occurred and threshold was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)
+
+@staff_member_required
+def ticket_progress(request):
+    return render(request, "ticketprogress.html")

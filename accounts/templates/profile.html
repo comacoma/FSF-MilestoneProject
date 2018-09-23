@@ -4,6 +4,11 @@
 {% block content %}
     <div class="container">
         <h1>{{ user }} Profile</h1>
-        <p><a href="{% url 'password_change' %}">Change Password</a></p>
+        <ul>
+            <li><a href="{% url 'password_change' %}">Change Password</a></li>
+            {% if request.user.is_staff %}
+            <li><a href="{% url 'ticket_progress' %}">Update/Log Ticket Progress</a></li>
+            {% endif %}
+        </ul>
     </div>
 {% endblock %}
