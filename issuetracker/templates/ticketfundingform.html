@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap_tags %}
 {% load static from staticfiles %}
+{% load widget_tweaks %}
 {% load tz %}
 
 {% block page_title %}Issue Tracker - Funding for Feature Request{% endblock %}
@@ -42,7 +43,16 @@
         </div>
 
         {% csrf_token %}
-        {{ funding_form | as_bootstrap }}
+        <div class="form-group">
+            {{ funding_form.fund.label_tag }}
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">£</span>
+                </div>
+                {% render_field funding_form.fund class="form-control" min="1" max="999999" step="1" %}
+            </div>
+        </div>
+
         {{ card_detail_form | as_bootstrap }}
 
         <button class="btn btn-primary" type="submit">Submit Fund</button>
