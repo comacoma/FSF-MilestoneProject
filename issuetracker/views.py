@@ -121,6 +121,7 @@ def ticket_details(request, pk):
             'threshold': threshold,
         })
 
+@login_required
 def edit_ticket(request, pk):
     """
     A view that allows users to edit existing tickets
@@ -128,15 +129,22 @@ def edit_ticket(request, pk):
 
     ticket = get_object_or_404(Ticket, pk=pk)
 
-    if request.method == "POST":
-        form = TicketSubmitForm(request.POST, instance=ticket)
-        if form.is_valid():
-            ticket = form.save()
-            return redirect(ticket_details, ticket.pk)
+    if request.user == ticket.author:
+        if request.method == "POST":
+            form = TicketSubmitForm(request.POST, instance=ticket)
+            if form.is_valid():
+                ticket = form.save(commit=False)
+                ticket.last_modified = timezone.now()
+                ticket.save()
+                return redirect(ticket_details, ticket.pk)
+        else:
+            form = TicketSubmitForm(instance=ticket)
     else:
-        form = TicketSubmitForm(instance=ticket, initial={'last_modified': timezone.now})
+        messages.warning(request, "You are not the author of this ticket and thus not allowed to edit.")
+        return redirect(ticket_details, ticket.pk)
     return render(request, 'ticketeditform.html', {'form': form, 'ticket': ticket})
 
+@login_required
 def edit_comment(request, ticketpk, commentpk):
     """
     A view that allows user to edit comment they posted
@@ -145,14 +153,24 @@ def edit_comment(request, ticketpk, commentpk):
 
     ticket = get_object_or_404(Ticket, pk=ticketpk)
     comment = get_object_or_404(Comment, pk=commentpk)
+    ticketcomments = Comment.objects.filter(ticket=ticket)
 
-    if request.method == "POST":
-        form = CommentPostForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
+    if comment in ticketcomments:
+        if comment.author == request.user:
+            if request.method == "POST":
+                form = CommentPostForm(request.POST, instance=comment)
+                if form.is_valid():
+                    form.save()
+                    return redirect(ticket_details, ticket.pk)
+            else:
+                form = CommentPostForm(instance=comment)
+        else:
+            messages.warning(request, "You are not the author of the comment and thus not allowed to edit.")
             return redirect(ticket_details, ticket.pk)
     else:
-        form = CommentPostForm(instance=comment)
+        messages.warning(request, "Comment retrieved is not part of this ticket, please check your url.")
+        return redirect(ticket_details, ticket.pk)
+
     return render(request, 'commenteditform.html', {'form': form, 'ticket': ticket})
 
 @login_required
