@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class Ticket(models.Model):
@@ -85,5 +85,25 @@ class Fund(models.Model):
     )
     date = models.DateTimeField()
 
+    class Meta:
+        ordering = ['-date']
+
     def __str__(self):
         return "£{0} by {1} ON {2}".format(self.fund, self.user.username, self.date.strftime('%Y-%m-%d %H:%M:%S'))
+
+class ProgressLog(models.Model):
+    max_bug = Ticket.objects.filter(type="T1").filter(status="S3").count()
+    max_feature_request = Ticket.objects.filter(type="T2").filter(status="S3").count()
+
+    date = models.DateField(primary_key=True)
+    bug_tended = models.PositiveSmallIntegerField(validators=[MaxValueValidator(max_bug)])
+
+    # The most upvoted feature request should always be tended to on a daily basis as promised
+    # in company policy, hence the minimum value of 1 for this field.
+    feature_tended = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(max_feature_request)])
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return "{0}: Bug Tended: {1} // Feature Request Tended: {2}".format(self.date, self.bug_tended, self.feature_tended)
