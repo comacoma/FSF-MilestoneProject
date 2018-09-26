@@ -6,12 +6,14 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Count, Q
-from .models import Ticket, Comment, Fund
+from django.db.models import Count, Sum
+from django.db.models.functions import ExtractWeek, ExtractMonth, ExtractYear
+from .models import Ticket, Comment, Fund, ProgressLog
 from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
 from .filters import TicketFilter
 import stripe
 import json
+import datetime
 
 stripe.api_key = settings.STRIPE_SECRET
 
@@ -34,6 +36,8 @@ def ticket_ranking_progress(request):
     A view that displays all data visualizations regarding issue tracker.
     """
 
+    today = datetime.datetime.today()
+
     bug_ranking = Ticket.objects.filter(type="T1") \
         .annotate(upvote_count=Count('upvote_user')) \
         .order_by('-upvote_count') \
@@ -41,12 +45,36 @@ def ticket_ranking_progress(request):
 
     feature_request_ranking = Ticket.objects.filter(type="T2").order_by('-upvote_fund')[:5]
 
+    progress_log = ProgressLog.objects.all()
+    pl_daily_filter = ProgressLog.objects.filter(
+        date__range=(today-datetime.timedelta(days=6), today)
+    ).order_by('date')
+    pl_weekly_filter = ProgressLog.objects \
+        .filter(date__year=today.year) \
+        .filter(date__month=today.month) \
+        .annotate(year=ExtractYear('date'), week=ExtractWeek('date')) \
+        .values('year', 'week') \
+        .annotate(week_bug_total=Sum('bug_tended')) \
+        .annotate(week_feature_total=Sum('feature_tended')) \
+        .order_by('week')
+    pl_monthly_filter = ProgressLog.objects \
+        .filter(date__year=today.year) \
+        .annotate(year=ExtractYear('date'), month=ExtractMonth('date')) \
+        .values('year', 'month') \
+        .annotate(month_bug_total=Sum('bug_tended')) \
+        .annotate(month_feature_total=Sum('feature_tended')) \
+        .order_by('month')
+
     return render(
         request,
         "ticketrankingprogress.html",
         {
             'bug_ranking': bug_ranking,
             'feature_request_ranking': feature_request_ranking,
+            'progress_log': progress_log,
+            'pl_daily_filter': pl_daily_filter,
+            'pl_weekly_filter': pl_weekly_filter,
+            'pl_monthly_filter': pl_monthly_filter,
         })
 
 @login_required
@@ -281,25 +309,3 @@ def update_threshold(request, pk):
         print(e)
         messages.warning(request, "An error has occurred and threshold was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)
-
-@staff_member_required
-def ticket_progress(request):
-    """
-    A staff only view where they can log how many hours they have used to
-    tend to tickets.
-    """
-
-    tickets = Ticket.objects.filter(status="S3")
-    mvf = Ticket.objects.order_by('upvote_fund').first()
-
-    return render(
-        request,
-        "ticketprogress.html",
-        {
-            'tickets': tickets,
-            'mvf': mvf,
-        })
-
-@staff_member_required
-def submit_log(request):
-    pass

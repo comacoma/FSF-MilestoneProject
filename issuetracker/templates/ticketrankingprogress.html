@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block page_title %}Issue Tracker - Ticket Rankings and Progress{% endblock %}
 
 {% block js_body %}
 <script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="https://momentjs.com/downloads/moment.js" charset="utf-8"></script>
 <script>
     Highcharts.chart('bug_ranking', {
         chart: {
@@ -104,6 +106,154 @@
             color: "#65f77d"
         }]
     });
+
+    Highcharts.chart('daily_tended_tickets', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Daily Tended Tickets'
+        },
+        xAxis: {
+            type: 'datetime',
+            labels: {
+                format: '{value: %Y/%b/%e}',
+            },
+            tickInterval: 24*3600*1000, // Interval = 1 day
+        },
+        yAxis: {
+            title: {
+                text: 'Tickets Tended'
+            },
+            allowDecimals: false,
+        },
+        series: [
+            {
+                name: 'Bugs',
+                data: [
+                    {% for item in pl_daily_filter %}
+                    {
+                        x: Date.parse('{{ item.date|date:"Y-m-d" }}'),
+                        y: {{ item.bug_tended }},
+                    },
+                    {% endfor %}
+                ]
+            },
+            {
+                name: 'Feature Request',
+                data: [
+                    {% for item in pl_daily_filter %}
+                    {
+                        x: Date.parse('{{ item.date|date:"Y-m-d" }}'),
+                        y: {{ item.feature_tended }},
+                    },
+                    {% endfor %}
+                ]
+            }
+        ]
+    });
+
+    Highcharts.chart('weekly_tended_tickets', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Weekly Tended Tickets'
+        },
+        xAxis: {
+            type: 'datetime',
+            labels: {
+                format: 'week Commencing {value: %Y/%b/%e}',
+            },
+            tickInterval: 24*3600*1000*7, // Interval = 1 week
+        },
+        yAxis: {
+            title: {
+                text: 'Tickets Tended'
+            },
+            allowDecimals: false,
+        },
+        series: [
+            {
+                name: 'Bugs',
+                data: [
+                    {% for item in pl_weekly_filter %}
+                    {
+                        x: Date.parse(
+                            moment()
+                            .year({{ item.year }})
+                            .week({{ item.week }})
+                            .day('monday')
+                            .toDate()
+                        ),
+                        y: {{ item.week_bug_total }},
+                    },
+                    {% endfor %}
+                ]
+            },
+            {
+                name: 'Feature Request',
+                data: [
+                    {% for item in pl_weekly_filter %}
+                    {
+                        x: Date.parse(
+                            moment()
+                            .year({{ item.year }})
+                            .week({{ item.week }})
+                            .day('monday')
+                            .toDate()
+                        ),
+                        y: {{ item.week_feature_total }},
+                    },
+                    {% endfor %}
+                ]
+            }
+        ]
+    });
+
+    Highcharts.chart('monthly_tended_tickets', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Monthly Tended Tickets'
+        },
+        xAxis: {
+            type: 'datetime',
+            /* Min interval = 28 days, will automatically adjust for different months */
+            minTickInterval: 28*24*3600*1000,
+        },
+        yAxis: {
+            title: {
+                text: 'Tickets Tended'
+            },
+            allowDecimals: false,
+        },
+        series: [
+            {
+                name: 'Bugs',
+                data: [
+                    {% for item in pl_monthly_filter %}
+                    {
+                        x: Date.parse('{{ item.year }}-{{ item.month }}-1'),
+                        y: {{ item.month_bug_total }},
+                    },
+                    {% endfor %}
+                ]
+            },
+            {
+                name: 'Feature Request',
+                data: [
+                    {% for item in pl_monthly_filter %}
+                    {
+                        x: Date.parse('{{ item.year }}-{{ item.month }}-1'),
+                        y: {{ item.month_feature_total }},
+                    },
+                    {% endfor %}
+                ]
+            }
+        ]
+    });
 </script>
 {% endblock %}
 
@@ -113,13 +263,19 @@
 
     {% if request.user.is_staff %}
         <div class="row">
-            <a href="{% url 'ticket_progress' %}"class="btn btn-info header-button col">Update/Log Ticket Progress</a>
+            <a href="/admin/issuetracker/progresslog/" class="btn btn-info header-button col" target="_blank">Update/Log Ticket Progress</a>
         </div>
     {% endif %}
 
     <div class="row">
         <div class="col" id="bug_ranking"></div>
         <div class="col" id="feature_request_ranking"></div>
+    </div>
+
+    <div class="row">
+        <div class="col" id="daily_tended_tickets"></div>
+        <div class="col" id="weekly_tended_tickets"></div>
+        <div class="col" id="monthly_tended_tickets"></div>
     </div>
 </div>
 {% endblock %}
