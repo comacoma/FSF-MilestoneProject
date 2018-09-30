@@ -33,11 +33,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
-                {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Blog</a>
+                    <a class="nav-link" href="{% url 'blog_home' %}">Blog</a>
                 </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'issue_tracker_home' %}">Issue Tracker</a>
                 </li>
