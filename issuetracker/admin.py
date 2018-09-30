@@ -12,7 +12,6 @@ class TicketAdmin(admin.ModelAdmin):
     ]
     readonly_fields = (
         'author',
-        'title',
         'type',
         'upvote_user',
         'submission_date',

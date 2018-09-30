@@ -7,7 +7,7 @@
     <div class="list-group">
         <a class="list-group-item list-group-item-action list-group-item-primary">User Feature</a>
         <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action">Change Password</a>
-        <a href="#" class="list-group-item list-group-item-action">Blog</a>
+        <a href="{% url 'user_blog_home' %}" class="list-group-item list-group-item-action">Blog</a>
         {% if request.user.is_staff %}
         <a class="list-group-item list-group-item-action list-group-item-primary">Staff Feature</a>
         <a href="/admin/issuetracker/progresslog/" class="list-group-item list-group-item-action">Update/ Log Ticket Progress</a>

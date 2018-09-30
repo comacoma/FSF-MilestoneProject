@@ -1,17 +1,129 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load helper %}
 
-{% block page_title %}{{ user }} Blog{% endblock %}
+{% block page_title %}
+    {% if 'myblogs' in request.get_full_path %}
+        {{ user }} Blogs
+    {% else %}
+        Unicorn Attractor Blogs
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Unicorn Attractor Blogs</h1>
+    <h1>
+        {% if 'myblogs' in request.get_full_path %}
+            {{ user }} Blogs
+        {% else %}
+            Unicorn Attractor Blogs
+        {% endif %}
+    </h1>
+
+    <form method="GET" class="form-inline">
+        {% render_field filter.form.title__icontains.label_tag %}
+        {% render_field filter.form.title__icontains class="form-control form-input-margin" %}
+        {% if 'myblogs' not in request.get_full_path %}
+            {% render_field filter.form.author.label_tag %}
+            {% render_field filter.form.author class="form-control form-input-margin" %}
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary form-control form-input-margin">Filter</button>
+        {% if 'myblogs' not in request.get_full_path %}
+        <a href="{% url 'blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+        {% else %}
+        <a href="{% url 'user_blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+        {% endif %}
+    </form>
+
+    <div>
+        <ul class="pagination">
+            {% if posts.has_previous %}
+                {% if 'title__icontains=' in request.get_full_path or 'author=' in request.get_full_path %}
+                    {% if 'page' in request.get_full_path %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ posts.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ posts.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><i class="fas fa-fast-backward"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ posts.previous_page_number }}" class="page-link"><i class="fas fa-backward"></i></a>
+                    </li>
+                {% endif %}
+            {% endif %}
+
+            {% for num in posts.paginator.page_range %}
+                {% if posts.number == num %}
+                    <li class="page-item">
+                        <a class="page-link"><strong>{{ num }}</strong></a>
+                    </li>
+                {% elif num > posts.number|add:'-5' and num < posts.number|add:'5' %}
+                    {% if 'title__icontains' in request.get_full_path or 'type' in request.get_full_path %}
+                        {% if 'page' in request.get_full_path %}
+                            <li class="page-item">
+                                <a href="{{ request.get_full_path | splitpart:0 }}&page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a href="{{ request.get_full_path }}&page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item">
+                            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+                {% if 'title__icontains=' in request.get_full_path or 'author=' in request.get_full_path %}
+                    {% if 'page' in request.get_full_path %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ posts.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path | splitpart:0 }}&page={{ posts.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ posts.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                        </li>
+                        <li class="page-item">
+                            <a href="{{ request.get_full_path }}&page={{ posts.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item">
+                        <a href="?page={{ posts.next_page_number }}" class="page-link"><i class="fas fa-forward"></i></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ posts.paginator.num_pages }}" class="page-link"><i class="fas fa-fast-forward"></i></a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
 
     <div class="list-group">
         {% for post in posts %}
-        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <a href="{% url 'post_detail' post.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ post.title }}</h5>
-                <small>{{ post.published_date }}</small>
+                <small>{{ post.published_date }} UTC</small>
             </div>
             <p class="mb-1">{{ post.content | truncatewords:30 }}...</p>
             <small>{{ post.author }}</small>

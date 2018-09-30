@@ -43,6 +43,11 @@
     margin: 5px;
 }
 
+.img-blogpost {
+    height: 100%;
+    width: 100%;
+}
+
 @media screen and (min-width: 991px) {
     .register-text {
         font-size: 90%;
