@@ -4,9 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.core.paginator import Paginator
-from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.db.models.functions import ExtractWeek, ExtractMonth, ExtractYear
 from .models import Ticket, Comment, Fund, ProgressLog
 from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
