@@ -163,9 +163,9 @@
         xAxis: {
             type: 'datetime',
             labels: {
-                format: 'week Commencing {value: %Y/%b/%e}',
+                format: '{value: %Y/%b/%e}',
             },
-            tickInterval: 24*3600*1000*7, // Interval = 1 week
+            tickInterval: 7*24*3600*1000, // Interval = 1 week
         },
         yAxis: {
             title: {
@@ -273,9 +273,9 @@
     </div>
 
     <div class="row">
-        <div class="col" id="daily_tended_tickets"></div>
-        <div class="col" id="weekly_tended_tickets"></div>
-        <div class="col" id="monthly_tended_tickets"></div>
+        <div class="col-12" id="daily_tended_tickets"></div>
+        <div class="col-12" id="weekly_tended_tickets"></div>
+        <div class="col-12" id="monthly_tended_tickets"></div>
     </div>
 </div>
 {% endblock %}
