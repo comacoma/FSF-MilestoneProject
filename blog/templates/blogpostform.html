@@ -5,7 +5,13 @@
 
 {% block content %}
 <div class="container">
-    <h1>New Post</h1>
+    <h1>
+        {% if 'edit' in request.get_full_path %}
+        Edit Post
+        {% else %}
+        New Post
+        {% endif %}
+    </h1>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form | as_bootstrap }}

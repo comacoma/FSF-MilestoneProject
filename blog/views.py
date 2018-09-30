@@ -62,5 +62,5 @@ def create_or_edit_post(request, pk=None):
             post = form.save()
             return redirect(post_detail, post.pk)
     else:
-        form = BlogPostForm(initial={'author': authorid})
+        form = BlogPostForm(instance=post, initial={'author': authorid})
     return render(request, "blogpostform.html", {'form': form})

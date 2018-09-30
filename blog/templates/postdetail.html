@@ -15,10 +15,12 @@
             <div class="row">
                 <a href="{% url 'blog_home' %}" class="btn btn-primary col-sm-12 col-md form-input-margin">Back to Blog Home</a>
                 <a href="{% url 'user_blog_home' %}" class="btn btn-primary col-sm-12 col-md form-input-margin">Back to Your Posts</a>
-                <a class="btn btn-secondary col-sm-12 col-md form-input-margin">Edit Post</a>
+                {% if post.author == user %}
+                <a href="{% url 'edit_post' post.id %}" class="btn btn-secondary col-sm-12 col-md form-input-margin">Edit Post</a>
+                {% endif %}
             </div>
             <hr />
-            <p>{{ post.content }}</p>
+            <p>{{ post.content | linebreaks }}</p>
             <hr />
             <p><strong>Published on: </strong>{{ post.published_date }}</p>
             <p><strong>Views: </strong>{{ post.views }}</p>
