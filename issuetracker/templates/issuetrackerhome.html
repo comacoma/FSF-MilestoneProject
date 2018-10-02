@@ -14,12 +14,14 @@
     </div>
 
     <form method="GET" class="form-inline">
-        {% for field in filter.form %}
-            {{ field.label_tag }}
-            {% render_field field class="form-control form-input-margin" %}
-        {% endfor %}
-        <button type="submit" class="btn btn-primary form-control form-input-margin">Filter</button>
-        <a href="{% url 'issue_tracker_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+        <div class="row">
+            {% for field in filter.form %}
+                {{ field.label_tag }}
+                {% render_field field class="form-control form-input-margin col-md" %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary form-control form-input-margin col-md-5 col-lg">Filter</button>
+            <a href="{% url 'issue_tracker_home' %}" class="btn btn-primary form-control form-input-margin col-md-5 col-lg">Reset</a>
+        </div>
     </form>
 
     <div>

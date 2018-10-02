@@ -21,19 +21,21 @@
     </h1>
 
     <form method="GET" class="form-inline">
-        {% render_field filter.form.title__icontains.label_tag %}
-        {% render_field filter.form.title__icontains class="form-control form-input-margin" %}
-        {% if 'myblogs' not in request.get_full_path %}
-            {% render_field filter.form.author.label_tag %}
-            {% render_field filter.form.author class="form-control form-input-margin" %}
-        {% endif %}
+        <div class="row">
+            {% render_field filter.form.title__icontains.label_tag %}
+            {% render_field filter.form.title__icontains class="form-control form-input-margin" %}
+            {% if 'myblogs' not in request.get_full_path %}
+                {% render_field filter.form.author.label_tag %}
+                {% render_field filter.form.author class="form-control form-input-margin" %}
+            {% endif %}
 
-        <button type="submit" class="btn btn-primary form-control form-input-margin">Filter</button>
-        {% if 'myblogs' not in request.get_full_path %}
-        <a href="{% url 'blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
-        {% else %}
-        <a href="{% url 'user_blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
-        {% endif %}
+            <button type="submit" class="btn btn-primary form-control form-input-margin">Filter</button>
+            {% if 'myblogs' not in request.get_full_path %}
+            <a href="{% url 'blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+            {% else %}
+            <a href="{% url 'user_blog_home' %}" class="btn btn-primary form-control form-input-margin form-reset">Reset</a>
+            {% endif %}
+        </div>
     </form>
 
     <div>
