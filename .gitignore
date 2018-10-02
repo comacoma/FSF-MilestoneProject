@@ -4,3 +4,4 @@ sent_emails
 env.py
 venv/
 media/
+credentials.csv
