@@ -92,8 +92,20 @@ class Fund(models.Model):
         return "£{0} by {1} ON {2}".format(self.fund, self.user.username, self.date.strftime('%Y-%m-%d %H:%M:%S'))
 
 class ProgressLog(models.Model):
-    max_bug = Ticket.objects.filter(type="T1").filter(status="S3").count()
-    max_feature_request = Ticket.objects.filter(type="T2").filter(status="S3").count()
+    """
+    Error will raise at line 99 and 104 when initialising a database from scratch
+    since there is no Tickets in the database yet. It can be solved by using try
+    and hard-code max_bug and max_feature_request to 0 when the error is catched.
+    """
+    try:
+        max_bug = Ticket.objects.filter(type="T1").filter(status="S3").count()
+    except:
+        max_bug = 0
+
+    try:
+        max_feature_request = Ticket.objects.filter(type="T2").filter(status="S3").count()
+    except:
+        max_feature_request = 0
 
     date = models.DateField(primary_key=True)
     bug_tended = models.PositiveSmallIntegerField(validators=[MaxValueValidator(max_bug)])
