@@ -5,7 +5,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.conf import settings
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.db.models.functions import ExtractWeek, ExtractMonth, ExtractYear
 from .models import Ticket, Comment, Fund, ProgressLog
 from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
@@ -33,6 +33,9 @@ def issue_tracker_home(request):
 def ticket_ranking_progress(request):
     """
     A view that displays all data visualizations regarding issue tracker.
+    Currently line charts of tickets tended is set to display data depending on
+    today's date and user has no control over that (as in they cannot choose what
+    date the line charts are based on).
     """
 
     today = datetime.datetime.today()
