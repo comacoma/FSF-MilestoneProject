@@ -2,7 +2,56 @@
 {% block page_title %}About{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>About</h1>
+<div class="container">
+    <h1>About Unicorn Attractor</h1>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="introduction-list" data-toggle="list" href="#list-introduction" role="tab" aria-controls="home">What is Unicron Attractor</a>
+                <a class="list-group-item list-group-item-action" id="features-list" data-toggle="list" href="#list-features" role="tab" aria-controls="profile">Features</a>
+                <a class="list-group-item list-group-item-action" id="how-to-join-list" data-toggle="list" href="#list-how-to-join" role="tab" aria-controls="messages">How to join us</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-introduction" role="tabpanel" aria-labelledby="introduction-list">
+                    <p>Unicorn Attractor is a web app that provides one stop service to help you to get your very own unicorn.</p>
+                    <p>
+                        Along the way we also aim to build a community of unicorn lovers, it is going to be a blast!
+                    </p>
+                </div>
+
+                <div class="tab-pane fade" id="list-features" role="tabpanel" aria-labelledby="features-list">
+                    <p>Our basic services are free of charge; you only need to ask.</p>
+                    <h4>Issue Tracker</h4>
+                    <p>
+                        We aim to give you the best experience possible when using our web app and as such we
+                        provide a platform called 'Issue Tracker' where users can report bugs they find on our
+                        app and we will fix them for free!
+                    </p>
+                    <p>
+                        On the other hand if there is some feature you would like to see added, 'Issue Tracker'
+                        is also the place to go to. We are all ears for your amazing ideas. However, we will
+                        need your support to make these idea come true. If you would like to support a certain
+                        feature request, you can make donations and with enough fund we promise to
+                        put in our best effort in developing new features. Furthermore, we also promise to spend
+                        at least 50% of our working time in developing the highest paid feature request in order
+                        to realise your idea as soon as possible.
+                    </p>
+                    <h4>Blog</h4>
+                    <p>
+                        Apart from Issue Tracker we also provide our users with bloggin feature. Share your stories of unicorns with the community!
+                    </p>
+                </div>
+
+                <div class="tab-pane fade" id="list-how-to-join" role="tabpanel" aria-labelledby="how-to-join-list">
+                    <p>
+                        To enjoy our amazing services you only need to become a member. Get started by
+                        <a href="{% url 'registration' %}">Registering</a> right now!
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
