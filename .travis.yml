@@ -1,10 +1,14 @@
 language: python
 python:
     - "3.6"
-services: sqlite3
+services: sqlite
 env:
     matrix:
-        - DJANGO=2.0 DB=sqlite3
+        - DJANGO=2.0 DB=sqlite
+branches:
+    only:
+        - master
+        - deployment
 install:
     - "pip install -q Django==$DJANGO"
     - "pip install -q -r requirements.txt"
