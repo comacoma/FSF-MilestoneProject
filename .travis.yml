@@ -9,4 +9,4 @@ install:
     - "pip install -q Django==$DJANGO"
     - "pip install -q -r requirements.txt"
 script:
-- SECRET_KEY="secretkey" ./manage.py test
+    - SECRET_KEY="whatever" ./manage.py test
