@@ -1,7 +1,6 @@
 language: python
 python:
     - "3.6"
-services: sqlite
 env:
     matrix:
         - DJANGO=2.0
