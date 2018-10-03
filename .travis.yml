@@ -6,8 +6,9 @@ services: sqlite3
 env:
     matrix:
         - DJANGO=2.0 DB=sqlite3
+        - SECRET_KEY = "secretkey"
 install:
     - "pip install -q Django==$DJANGO"
     - "pip install -q -r requirements.txt"
 script:
-- SECRET_KEY = "secretkey" ./manage.py test
+- ./manage.py test
