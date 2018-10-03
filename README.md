@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/comacoma/FSF-MilestoneProject.svg?branch=master)](https://travis-ci.org/comacoma/FSF-MilestoneProject)
+
 # Unicorn Attractor - Issue Tracker
 As the final project of Code Institute's Full stack Web Developer course, this project involves building an issue tracker of an imaginary web service called 'Unicorn Attractor'. As part of the service, free bug fixes and crowd funded development of additional features are being offered, which is represented in forms of an issue tracker.
 
