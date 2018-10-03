@@ -8,6 +8,8 @@ branches:
     only:
         - master
         - deployment
+before_install:
+    - chmod +x manage.py
 install:
     - "pip install -q Django==$DJANGO"
     - "pip install -q -r requirements.txt"
