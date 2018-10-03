@@ -6,7 +6,6 @@ env:
         - DJANGO=2.0
 branches:
     only:
-        - master
         - deployment
 before_install:
     - chmod +x manage.py
