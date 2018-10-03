@@ -4,7 +4,7 @@ python:
 services: sqlite
 env:
     matrix:
-        - DJANGO=2.0 DB=sqlite
+        - DJANGO=2.0
 branches:
     only:
         - master
