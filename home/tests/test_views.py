@@ -5,6 +5,9 @@ from django.urls import reverse
 Home app does not have any data model directly
 related to it so it is not needed to setup
 test data.
+
+The same can be said for functionality as views in home app
+are used to render templates ONLY in this case.
 """
 
 class TestIndexViews(TestCase):
