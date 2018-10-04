@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 
 """
 Home app does not have any data model directly
@@ -20,12 +21,10 @@ class TestIndexViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
 
-     def test_page_contains_correct_html(self):
+    def test_page_contains_correct_html(self):
         response = self.client.get('/')
         self.assertContains(
-            response,
-            '<h2>Welcome to Unicorn Attractor, your one stop web' +
-            ' service for getting your very own unicorn!</h2>')
+            response, '<h2>Welcome to Unicorn Attractor, your one stop web service for getting your very own unicorn!</h2>')
 
     def test_page_does_not_contain_incorrect_html(self):
         response = self.client.get('/')
@@ -46,7 +45,7 @@ class TestAboutViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'about.html')
 
-     def test_page_contains_correct_html(self):
+    def test_page_contains_correct_html(self):
         response = self.client.get('/about/')
         self.assertContains(
             response,
