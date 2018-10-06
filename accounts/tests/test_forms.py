@@ -53,7 +53,7 @@ class TestUserRegistrationForm(TestCase):
         form = UserRegistrationForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-    def test__invalid_form_1(self):
+    def test_invalid_form_1(self):
         form_data = {
             'email': 'test@test.com',
             'username': 'testuser',
@@ -63,7 +63,7 @@ class TestUserRegistrationForm(TestCase):
         form = UserRegistrationForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test__invalid_form_2(self):
+    def test_invalid_form_2(self):
         form_data = {
             'email': 'test@test.com',
             'username': 'testuser',
@@ -73,7 +73,7 @@ class TestUserRegistrationForm(TestCase):
         form = UserRegistrationForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test__invalid_form_3(self):
+    def test_invalid_form_3(self):
         form_data = {
             'email': 'this is not a email address', # not a valid email format
             'username': 'testuser',
@@ -83,7 +83,7 @@ class TestUserRegistrationForm(TestCase):
         form = UserRegistrationForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test__invalid_form_4(self):
+    def test_invalid_form_4(self):
         form_data = {
             'email': 'test@test.com',
             'username': 'user1', # using existing username
@@ -93,7 +93,7 @@ class TestUserRegistrationForm(TestCase):
         form = UserRegistrationForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    def test__invalid_form_5(self):
+    def test_invalid_form_5(self):
         form_data = {
             'email': 'user1@user.com', # using existing email
             'username': 'testuser',
