@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+
 """
 This project uses default user model provided by django without any extension
 or modification, hence it is not needed to test the model itself. However
@@ -23,9 +24,9 @@ class TestLoginView(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
-    # def test_page_contains_correct_html(self):
-    #     response = self.client.get('/acounts/login/')
-    #     self.assertContains(response, '<p>Login using your username or email</p>')
+    def test_page_contains_correct_html(self):
+        response = self.client.get('/accounts/login/')
+        self.assertContains(response, '<p>Login using your username or email</p>')
 
     def test_page_does_not_contain_incorrect_html(self):
         response = self.client.get('/accounts/login/')
@@ -45,3 +46,72 @@ class TestLoginBehaviour(TestCase):
     def test_login(self):
         response = self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
         self.assertTrue(response.context['user'].is_authenticated)
+
+    def test_login_redirect(self):
+        response = self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
+        self.assertRedirects(response, reverse('index'))
+
+    def test_login_message(self):
+        response = self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
+        self.assertContains(response, 'You have successfully logged in!')
+
+class TestLogoutBehaviour(TestCase):
+    def setUp(self):
+        self.credentials = {
+            'username': 'testuser',
+            'password': 'secret'
+        }
+        User.objects.create_user(**self.credentials)
+
+    """
+    Using in app method to login instead of direct login.
+    """
+    def test_logout(self):
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
+        self.assertFalse(response.context['user'].is_authenticated)
+
+    def test_logout_redirect(self):
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
+        self.assertRedirects(response, reverse('index'))
+
+    def test_login_message(self):
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
+        response = self.client.get('/accounts/logout/', follow=True)
+        self.assertContains(response, 'You have successfully logged out.')
+
+class TestRegistrationView(TestCase):
+    def test_view_status(self):
+        response = self.client.get('/accounts/register/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_url_by_name(self):
+        response = self.client.get(reverse('registration'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('registration'))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registration.html')
+
+    def test_page_contains_correct_html(self):
+        response = self.client.get('/accounts/register/')
+        self.assertContains(response, '<h1>User Registration</h1>')
+
+    def test_page_does_not_contain_incorrect_html(self):
+        response = self.client.get('/accounts/register/')
+        self.assertNotContains(response, 'Hi there! I should not be on the page.')
+
+class TestRegistrationBehaviour(TestCase):
+    def test_registration(self):
+        response = self.client.post(
+            reverse('registration'),
+            data = {
+                'username': 'testuser',
+                'email': 'test@test.com',
+                'password1': 'kakapapa',
+                'password2': 'kakapapa'
+            })
+        user = User.objects.get(username='testuser')
+        self.assertTrue(user.is_authenticated)
