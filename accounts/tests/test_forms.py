@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 """
 These tests only test if the form validates input, but
 does not test the behaviour related to using the forms.
+
+Also there is no need to test forms related to password change/
+reset as the default is being used.
 """
 class TestUserLoginForm(TestCase):
     def test_form(self):

@@ -2,12 +2,15 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-
 """
 This project uses default user model provided by django without any extension
 or modification, hence it is not needed to test the model itself. However
 it is necessary to test the authentication behaviour (i.e. login/ logout/
 registration)
+
+Also there is no need to test views related to password change/ reset. This is because
+this project uses default views provided by Django for said features, albeit a
+custom template is being used.
 """
 
 class TestLoginView(TestCase):
@@ -114,4 +117,56 @@ class TestRegistrationBehaviour(TestCase):
                 'password2': 'kakapapa'
             })
         user = User.objects.get(username='testuser')
-        self.assertTrue(user.is_authenticated)
+        self.assertTrue(user.is_authenticated)#
+
+    def test_registration_redirect(self):
+        response = self.client.post(
+            reverse('registration'),
+            data = {
+                'username': 'testuser',
+                'email': 'test@test.com',
+                'password1': 'kakapapa',
+                'password2': 'kakapapa'
+            }, follow=True)
+        self.assertRedirects(response, reverse('index'))
+
+    def test_registration_message(self):
+        response = self.client.post(
+            reverse('registration'),
+            data = {
+                'username': 'testuser',
+                'email': 'test@test.com',
+                'password1': 'kakapapa',
+                'password2': 'kakapapa'
+            }, follow=True)
+        self.assertContains(response, 'You have successfully registered!')
+
+class TestProfileView(TestCase):
+    def setUp(self):
+        self.credentials = {
+            'username': 'testuser',
+            'password': 'secret'
+        }
+        User.objects.create_user(**self.credentials)
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'})
+
+    def test_view_status(self):
+        response = self.client.get('/accounts/profile/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_url_by_name(self):
+        response = self.client.get(reverse('profile'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('profile'))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profile.html')
+
+    def test_page_contains_correct_html(self):
+        response = self.client.get('/accounts/profile/')
+        self.assertContains(response, '<h1>testuser Profile</h1>')
+
+    def test_page_does_not_contain_incorrect_html(self):
+        response = self.client.get('/accounts/profile/')
+        self.assertNotContains(response, 'Hi there! I should not be on the page.')
