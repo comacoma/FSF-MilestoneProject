@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib import auth
 from django.contrib.auth.models import User
 
 """
@@ -42,6 +43,7 @@ class TestLoginBehaviour(TestCase):
     def setUp(self):
         self.credentials = {
             'username': 'testuser',
+            'email': 'testuser@user.com',
             'password': 'secret'
         }
         User.objects.create_user(**self.credentials)
@@ -58,6 +60,22 @@ class TestLoginBehaviour(TestCase):
         response = self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
         self.assertContains(response, 'You have successfully logged in!')
 
+    def test_email_login(self):
+        response = self.client.post('/accounts/login/', {'username': 'testuser@user.com', 'password': 'secret'}, follow=True)
+        self.assertTrue(response.context['user'].is_authenticated)
+
+    def test_invalid_login(self):
+        response = self.client.post('/accounts/login/', {'username': 'noneuser', 'password': 'secret'}, follow=True) # non-existing user
+        self.assertFalse(response.context['user'].is_authenticated)
+
+    """
+    This test checks that user will not be directed to login page when logged in already
+    """
+    def test_redirect_post_login(self):
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'})
+        response = self.client.get('/accounts/login/')
+        self.assertRedirects(response, reverse('index'))
+
 class TestLogoutBehaviour(TestCase):
     def setUp(self):
         self.credentials = {
@@ -65,22 +83,20 @@ class TestLogoutBehaviour(TestCase):
             'password': 'secret'
         }
         User.objects.create_user(**self.credentials)
+        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
 
     """
     Using in app method to login instead of direct login.
     """
     def test_logout(self):
-        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
         response = self.client.get('/accounts/logout/', follow=True)
         self.assertFalse(response.context['user'].is_authenticated)
 
     def test_logout_redirect(self):
-        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
         response = self.client.get('/accounts/logout/', follow=True)
         self.assertRedirects(response, reverse('index'))
 
     def test_login_message(self):
-        self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'secret'}, follow=True)
         response = self.client.get('/accounts/logout/', follow=True)
         self.assertContains(response, 'You have successfully logged out.')
 
@@ -117,7 +133,7 @@ class TestRegistrationBehaviour(TestCase):
                 'password2': 'kakapapa'
             })
         user = User.objects.get(username='testuser')
-        self.assertTrue(user.is_authenticated)#
+        self.assertTrue(user.is_authenticated)
 
     def test_registration_redirect(self):
         response = self.client.post(
@@ -140,6 +156,22 @@ class TestRegistrationBehaviour(TestCase):
                 'password2': 'kakapapa'
             }, follow=True)
         self.assertContains(response, 'You have successfully registered!')
+
+    """
+    This test checks that user will not be directed to registration page after
+    registration and logged in.
+    """
+    def test_redirect_post_login(self):
+        self.client.post(
+            reverse('registration'),
+            data = {
+                'username': 'testuser',
+                'email': 'test@test.com',
+                'password1': 'kakapapa',
+                'password2': 'kakapapa'
+            }, follow=True)
+        response = self.client.get(reverse('registration'))
+        self.assertRedirects(response, reverse('index'))
 
 class TestProfileView(TestCase):
     def setUp(self):

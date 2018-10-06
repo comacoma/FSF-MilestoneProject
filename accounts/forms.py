@@ -33,6 +33,13 @@ class UserRegistrationForm(UserCreationForm):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
 
+        """
+        The following validation is also handled by bootstrap forms
+        so this validation error will not raise as validation error
+        from bootstrap form will be raised beforehand, hence
+        this validation will not be covered by tests when bootstrap
+        form is used.
+        """
         if not password1 or not password2:
             raise forms.ValidationError(u"Please confirm your password")
 
