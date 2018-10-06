@@ -20,6 +20,10 @@
         {% endif %}
     </h1>
 
+    <div class="row">
+        <a href="{% url 'new_post' %}" class="btn btn-success col">New Blog</a>
+    </div>
+
     <form method="GET" class="form-inline">
         <div class="row">
             {% render_field filter.form.title__icontains.label_tag %}
