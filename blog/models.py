@@ -9,8 +9,11 @@ class Post(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
     )
-    title = models.CharField(max_length=200)
-    content = models.TextField()
+    """
+    Content can be left blank but title is required
+    """
+    title = models.CharField(max_length=200, blank=False, null=False)
+    content = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(blank=True, null=True, default=timezone.now)
     views = models.IntegerField(default=0)
