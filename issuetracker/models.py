@@ -93,7 +93,7 @@ class Fund(models.Model):
 
 class ProgressLog(models.Model):
     """
-    Error will raise at line 99 and 104 when initialising a database from scratch
+    Error will raise at line 101 and 106 when initialising a database from scratch
     since there is no Tickets in the database yet. It can be solved by using try
     and hard-code max_bug and max_feature_request to 0 when the error is catched.
     """
