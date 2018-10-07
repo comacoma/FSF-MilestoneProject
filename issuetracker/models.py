@@ -69,6 +69,7 @@ class Comment(models.Model):
 class Fund(models.Model):
     ticket = models.ForeignKey(
         'Ticket',
+        limit_choices_to={'type': 'T2'},
         on_delete = models.PROTECT,
     )
     user = models.ForeignKey(
@@ -89,7 +90,7 @@ class Fund(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return "£{0} by {1} ON {2}".format(self.fund, self.user.username, self.date.strftime('%Y-%m-%d %H:%M:%S'))
+        return "£{0} by {1} ON {2} / Date:{3}".format(self.fund, self.user.username, self.ticket.title, self.date.strftime('%Y-%m-%d %H:%M:%S'))
 
 class ProgressLog(models.Model):
     """
