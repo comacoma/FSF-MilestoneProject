@@ -16,6 +16,19 @@ class TicketSubmitForm(forms.ModelForm):
             'last_modified': forms.HiddenInput(),
         }
 
+class TicketEditForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = (
+            'title',
+            'content',
+            'last_modified',
+        )
+        widgets = {
+            'author': forms.HiddenInput(),
+            'last_modified': forms.HiddenInput(),
+        }
+
 class CommentPostForm(forms.ModelForm):
     class Meta:
         model = Comment

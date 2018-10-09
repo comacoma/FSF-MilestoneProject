@@ -8,7 +8,15 @@ from django.conf import settings
 from django.db.models import Sum, Count
 from django.db.models.functions import ExtractWeek, ExtractMonth, ExtractYear
 from .models import Ticket, Comment, Fund, ProgressLog
-from .forms import TicketSubmitForm, CommentPostForm, FundingForm, UpdateStatusForm, UpdateThresholdForm, CardDetailForm
+from .forms import (
+    TicketSubmitForm,
+    TicketEditForm,
+    CommentPostForm,
+     FundingForm,
+     UpdateStatusForm,
+     UpdateThresholdForm,
+     CardDetailForm
+)
 from .filters import TicketFilter
 import stripe
 import json
@@ -161,14 +169,14 @@ def edit_ticket(request, pk):
 
     if request.user == ticket.author:
         if request.method == "POST":
-            form = TicketSubmitForm(request.POST, instance=ticket)
+            form = TicketEditForm(request.POST, instance=ticket)
             if form.is_valid():
                 ticket = form.save(commit=False)
                 ticket.last_modified = timezone.now()
                 ticket.save()
                 return redirect(ticket_details, ticket.pk)
         else:
-            form = TicketSubmitForm(instance=ticket)
+            form = TicketEditForm(instance=ticket)
     else:
         messages.warning(request, "You are not the author of this ticket and thus not allowed to edit.")
         return redirect(ticket_details, ticket.pk)
