@@ -4,7 +4,6 @@ from .models import Ticket, Comment, Fund, ProgressLog
 # Register your models here.
 class CommentInline(admin.TabularInline):
     model = Comment
-    readonly_fields = ('author', 'comment_date',)
 
 class TicketAdmin(admin.ModelAdmin):
     inlines = [
@@ -27,7 +26,7 @@ class TicketAdmin(admin.ModelAdmin):
     Referring code from:
     https://stackoverflow.com/questions/17613559/django-readonly-field-only-on-change-but-not-when-creating
     """
-    def get_readonly_fields(self, request, obj=None):
+    def get_readonly_fields(self, request, obj=None): # pragma: no cover
         if obj: #This is the case when obj is already created i.e. it's an edit
             return ['author', 'type']
         else:
