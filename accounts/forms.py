@@ -40,7 +40,7 @@ class UserRegistrationForm(UserCreationForm):
         this validation will not be covered by tests when bootstrap
         form is used.
         """
-        if not password1 or not password2:
+        if not password1 or not password2: # pragma: no cover
             raise forms.ValidationError(u"Please confirm your password")
 
         if password1 != password2:

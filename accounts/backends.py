@@ -10,7 +10,7 @@ class EmailAuth:
 
             if user.check_password(password):
                 return user
-            return None
+            return None # pragma: no cover
         except User.DoesNotExist:
             return None
 
@@ -22,6 +22,6 @@ class EmailAuth:
 
             if user.is_active:
                 return user
-            return None
-        except User.DoesNotExist:
+            return None # pragma: no cover
+        except User.DoesNotExist: # pragma: no cover
             return None

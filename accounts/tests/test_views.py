@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib import auth
 from django.contrib.auth.models import User
+from accounts import backends
 
 """
 This project uses default user model provided by django without any extension
@@ -64,8 +65,12 @@ class TestLoginBehaviour(TestCase):
         response = self.client.post('/accounts/login/', {'username': 'testuser@user.com', 'password': 'secret'}, follow=True)
         self.assertTrue(response.context['user'].is_authenticated)
 
-    def test_invalid_login(self):
+    def test_invalid_login_1(self):
         response = self.client.post('/accounts/login/', {'username': 'noneuser', 'password': 'secret'}, follow=True) # non-existing user
+        self.assertFalse(response.context['user'].is_authenticated)
+
+    def test_invalid_login_2(self):
+        response = self.client.post('/accounts/login/', {'username': 'testuser', 'password': 'notsecret'}, follow=True) # wrong password
         self.assertFalse(response.context['user'].is_authenticated)
 
     """
