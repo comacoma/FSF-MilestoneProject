@@ -1,0 +1,10 @@
+[report]
+exclude_lines =
+    pragma: no cover
+omit=
+    unicorn_attractor/settings.py
+    /*/migrations/*
+    manage.py
+    __init__.py
+    /*/__init__.py
+    /*/*/__init__.py
