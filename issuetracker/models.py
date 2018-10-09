@@ -100,12 +100,12 @@ class ProgressLog(models.Model):
     """
     try:
         max_bug = Ticket.objects.filter(type="T1").filter(status="S3").count()
-    except:
+    except: # pragma: no cover
         max_bug = 0
 
     try:
         max_feature_request = Ticket.objects.filter(type="T2").filter(status="S3").count()
-    except:
+    except: # pragma: no cover
         max_feature_request = 0
 
     date = models.DateField(primary_key=True)
