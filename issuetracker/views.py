@@ -218,6 +218,15 @@ def upvote(request, pk):
     """
 
     ticket = get_object_or_404(Ticket, pk=pk)
+
+    if ticket.type != 'T1':
+        messages.warning(
+            request,
+            'Upvoting alone is not enough. We need your donation so that we can' +
+            ' work on the feature request!'
+        )
+        return redirect(ticket_details, ticket.pk)
+
     if ticket.upvote_user.filter(id=request.user.id).exists():
         ticket.upvote_user.remove(request.user)
         return redirect(ticket_details, ticket.pk)
@@ -233,6 +242,14 @@ def fund(request, pk):
     """
 
     ticket = get_object_or_404(Ticket, pk=pk)
+
+    if ticket.type != "T2":
+        messages.warning(
+            request,
+            'You upvote is all we need to work on a bug fixes.' +
+            ' We appreciate the thought though!'
+        )
+        return redirect(ticket_details, ticket.pk)
 
     if request.method=="POST":
         funding_form = FundingForm(request.POST)
@@ -295,7 +312,7 @@ def update_status(request, pk):
                 status.save()
                 messages.success(request, "Status has been successfully updated!")
         return redirect(ticket_details, ticket.pk)
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         print(e)
         messages.warning(request, "An error has occurred and status was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)
@@ -315,7 +332,7 @@ def update_threshold(request, pk):
                 threshold.save()
                 messages.success(request, "Threshold has been successfully updated!")
         return redirect(ticket_details, ticket.pk)
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         print(e)
         messages.warning(request, "An error has occurred and threshold was not updated. Please check log.")
         return redirect(ticket_details, ticket.pk)
