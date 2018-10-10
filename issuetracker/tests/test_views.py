@@ -9,7 +9,6 @@ from issuetracker.forms import (
     CardDetailForm
 )
 
-import os
 import stripe
 
 class TestIssueTrackerHomeView(TestCase):
@@ -613,7 +612,7 @@ class TestFundBehaviour(TestCase):
             type='T2'
         )
 
-        stripe.api_key = os.getenv('STRIPE_SECRET')
+        stripe.api_key = "sk_test_2DK2HGz2MqXJwVIwweVkywth"
 
     def setUp(self):
         self.client.login(username='teststaff', password='12345')
