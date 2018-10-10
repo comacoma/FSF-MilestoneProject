@@ -8,7 +8,6 @@ from issuetracker.forms import (
     CardDetailForm
 )
 
-from unicorn_attractor.settings import STRIPE_SECRET
 import stripe
 
 """
@@ -107,7 +106,7 @@ class TestFundingForm(TestCase):
             type='T2'
         )
 
-        stripe.api_key = STRIPE_SECRET
+        stripe.api_key = "sk_test_2DK2HGz2MqXJwVIwweVkywth"
 
     def test_form(self):
         form_data={
