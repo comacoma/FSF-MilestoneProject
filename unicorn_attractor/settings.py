@@ -161,7 +161,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+MEDIA_URL = "https://%s%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
