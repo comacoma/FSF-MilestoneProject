@@ -106,8 +106,6 @@ class TestFundingForm(TestCase):
             type='T2'
         )
 
-        stripe.api_key = "sk_test_2DK2HGz2MqXJwVIwweVkywth"
-
     def test_form(self):
         form_data={
             'user': 1,
@@ -149,6 +147,8 @@ class TestCardDetailForm(TestCase):
             content='test content.',
             type='T2'
         )
+
+        stripe.api_key = "sk_test_2DK2HGz2MqXJwVIwweVkywth"
 
     def test_form(self):
         token = stripe.Token.create(
