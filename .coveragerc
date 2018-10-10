@@ -8,3 +8,4 @@ omit=
     __init__.py
     /*/__init__.py
     /*/*/__init__.py
+    env.py
