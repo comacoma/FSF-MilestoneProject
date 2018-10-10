@@ -6,10 +6,11 @@ from issuetracker.forms import (
     TicketSubmitForm,
     CommentPostForm,
     FundingForm,
-    UpdateStatusForm,
-    UpdateThresholdForm,
     CardDetailForm
 )
+
+from unicorn_attractor.settings import STRIPE_SECRET
+import stripe
 
 class TestIssueTrackerHomeView(TestCase):
     def test_view_status(self):
@@ -207,6 +208,58 @@ class TestCommentEditFormView(TestCase):
     def test_page_does_not_contain_incorrect_html(self):
         response = self.client.get('/issuetracker/ticket/1/comment/1/edit/')
         self.assertNotContains(response, 'Hi there! I should not be on the page.')
+
+class TestFundingFormView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        new_staff = User.objects.create_user('teststaff')
+        new_staff.set_password('12345')
+        new_staff.is_staff = True
+        new_staff.save()
+
+        Ticket.objects.create(
+            author=User.objects.get(pk=1),
+            title='Test Post (Bug)',
+            content='test content.',
+            type='T2'
+        )
+
+    def setUp(self):
+        self.client.login(username='teststaff', password='12345')
+
+    def test_view_status(self):
+        response = self.client.get('/issuetracker/ticket/1/fund/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_url_by_name(self):
+        response = self.client.get(reverse('fund', kwargs={'pk':1}))
+        self.assertEquals(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('fund', kwargs={'pk':1}))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ticketfundingform.html')
+
+    def test_page_contains_correct_html(self):
+        response = self.client.get('/issuetracker/ticket/1/fund/')
+        self.assertContains(response, '<title>Unicorn Attractor - Issue Tracker - Funding for Feature Request</title>')
+
+    def test_page_does_not_contain_incorrect_html(self):
+        response = self.client.get('/issuetracker/ticket/1/fund/')
+        self.assertNotContains(response, 'Hi there! I should not be on the page.')
+
+    def test_invalid_url(self):
+        """
+        To test that user should not be able to get to a 'funding page'
+        of a bug ticket.
+        """
+        response = self.client.get(reverse('upvote', kwargs={'pk':1}), follow=True)
+        self.assertRedirects(response, reverse('ticket_details', kwargs={'pk':1}))
+        self.assertContains(
+            response,
+            'Upvoting alone is not enough. We need your donation so that we can' +
+            ' work on the feature request!'
+        )
 
 class TestTicketBehaviour(TestCase):
     @classmethod
@@ -560,18 +613,69 @@ class TestFundBehaviour(TestCase):
             type='T2'
         )
 
+        stripe.api_key = STRIPE_SECRET
+
     def setUp(self):
         self.client.login(username='teststaff', password='12345')
 
-    def test_invalid_url(self):
-        """
-        To test that user should not be able to get to a 'funding page'
-        of a bug ticket.
-        """
-        response = self.client.get(reverse('upvote', kwargs={'pk':1}), follow=True)
-        self.assertRedirects(response, reverse('ticket_details', kwargs={'pk':1}))
-        self.assertContains(
-            response,
-            'Upvoting alone is not enough. We need your donation so that we can' +
-            ' work on the feature request!'
+    def test_fund_submission(self):
+        token = stripe.Token.create(
+            card={
+                "number": '4242424242424242',
+                "exp_month": 12,
+                "exp_year": 2020,
+                "cvc": '123'
+            },
         )
+
+        response = self.client.post(
+            reverse('fund', kwargs={'pk':1}),
+            data={
+                'user': 1,
+                'ticket': 1,
+                'fund': 10,
+                'credit_card_number': '4242424242424242',
+                'cvv': '123',
+                'expiry_month': 12,
+                'expiry_year': 2020,
+                'stripe_id': token.id
+            },
+            follow=True
+        )
+        self.assertRedirects(response, reverse('ticket_details', kwargs={'pk':1}))
+        self.assertContains(response, 'Thank you for your donation!')
+
+        ticket = Ticket.objects.get(pk=1)
+        self.assertEquals(ticket.upvote_fund, 10)
+
+    def test_auto_update_ticket_status(self):
+        ticket = Ticket.objects.get(pk=1)
+        ticket.threshold = 10
+        ticket.save()
+        self.assertEquals(ticket.status, 'S1')
+
+        token = stripe.Token.create(
+            card={
+                "number": '4242424242424242',
+                "exp_month": 12,
+                "exp_year": 2020,
+                "cvc": '123'
+            },
+        )
+
+        response = self.client.post(
+            reverse('fund', kwargs={'pk':1}),
+            data={
+                'user': 1,
+                'ticket': 1,
+                'fund': 10,
+                'credit_card_number': '4242424242424242',
+                'cvv': '123',
+                'expiry_month': 12,
+                'expiry_year': 2020,
+                'stripe_id': token.id
+            },
+            follow=True
+        )
+        ticket = Ticket.objects.get(pk=1)
+        self.assertEquals(ticket.status, 'S2') # status has been updated automatically

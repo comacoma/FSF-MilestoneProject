@@ -263,7 +263,7 @@ def fund(request, pk):
                     description = "{0} donation on {1}".format(request.user.email, ticket.title),
                     card = card_detail_form.cleaned_data['stripe_id'],
                 )
-            except stripe.error.CardError:
+            except stripe.error.CardError: # pragma: no cover
                 messages.warning(request, "Your card was declined!")
 
             if donor.paid:
@@ -276,9 +276,9 @@ def fund(request, pk):
                 ticket.save()
 
                 return redirect(ticket_details, ticket.pk)
-            else:
+            else: # pragma: no cover
                 messages.warning(request, "Unable to take payment.")
-        else:
+        else: # pragma: no cover
             print(funding_form.errors)
             print(card_detail_form.errors)
             messages.warning(request, "We were not able to take payment from the card you provided.")
