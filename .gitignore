@@ -5,5 +5,3 @@ env.py
 venv/
 media/
 credentials.csv
-.coverage
-htmlcov/
