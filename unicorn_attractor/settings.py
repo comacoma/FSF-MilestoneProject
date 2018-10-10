@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', os.environ.get('C9_HOSTNAME')]
+ALLOWED_HOSTS = ['127.0.0.1', os.environ.get('C9_HOSTNAME'), 'fsf-milestone.herokuapp.com']
 
 
 # Application definition
