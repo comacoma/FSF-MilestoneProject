@@ -13,6 +13,7 @@ django-forms-bootstrap==3.1.0
 django-storages==1.7.1
 django-widget-tweaks==1.4.3
 docutils==0.14
+gunicorn==19.9.0
 humanize==0.5.1
 idna==2.7
 jmespath==0.9.3
