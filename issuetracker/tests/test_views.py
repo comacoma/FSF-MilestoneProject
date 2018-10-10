@@ -9,7 +9,7 @@ from issuetracker.forms import (
     CardDetailForm
 )
 
-from unicorn_attractor.settings import STRIPE_SECRET
+import os
 import stripe
 
 class TestIssueTrackerHomeView(TestCase):
@@ -613,7 +613,7 @@ class TestFundBehaviour(TestCase):
             type='T2'
         )
 
-        stripe.api_key = STRIPE_SECRET
+        stripe.api_key = os.getenv('STRIPE_SECRET')
 
     def setUp(self):
         self.client.login(username='teststaff', password='12345')
