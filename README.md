@@ -80,6 +80,12 @@ For tests and coverage please refer to tests folder of each app, as well as html
 - Accessing to page that does not make sense:
 	- Due to the url pattern user can for example, end up in a funding page for a bug ticket or upvoting (like) a feature request ticket, which is not intended. If fact, this was not addressed until testing. As a solution, a simple check is performed before other logic in such views and make sure users are redirected back to ticket details page when they attempt to access such non-sensical page.
 
+Another thing to take note of is the responsive design of this project. Using a mobile-first approach, the web app has different layout depending on screen size. To be specific:
+- A 1 column layout is used on smaller screen size and some lists have columns omitted when being displayed on smaller screen size. (i.e. issue tracker ticket list only displays the title of ticket when on smaller screen but shows more information such as author of ticket, type of ticket etc. when displayed on larger screen.)
+- On larger screens, contents are laid more evenly across the screen.
+- By using Bootstrap, navigation bar becomes a collapsible menu on smaller screens and expand to a full bar on larger screens.
+- Apart from layout difference, UX is pretty much the same in terms of how user can navigate throughout the app.
+
 ## Deployment
 To make sure there is no need to put down the deployed version once it's ready, a separate branch 'deployment' will be used for this purpose. Instead of using different configuration files, certain values in settings are different in master and deployment branch. For example:
 - Debug mode is ON in master branch while it is OFF in deployment branch.
