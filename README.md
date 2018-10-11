@@ -65,6 +65,7 @@ Any newly submitted tickets will have their status automatically set to 'Reviewi
 	- It is used during testing to ensure high coverage of code tested.
 
 ## Testing
+[View test coverage report](https://comacoma.github.io/FSF-MilestoneProject/)
 All apps created in this project will be tested on:
 - Data models
 - Forms
