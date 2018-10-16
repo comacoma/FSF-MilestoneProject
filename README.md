@@ -40,8 +40,9 @@ Any newly submitted tickets will have their status automatically set to 'Reviewi
 - Blog: all registered user will be able to write blogs within the web app. Though the structure is simple it allows users to upload an image per blog post.
 
 ## Technologies Used
-- [HTML](https://www.w3.org/html/), [CSS](https://www.w3.org/Style/CSS/), [JavaScript](https://www.javascript.com/)
+- [HTML](https://www.w3.org/html/), [CSS](https://www.w3.org/Style/CSS/), [JavaScript](https://www.javascript.com/), [Python](https://www.python.org/)
 	- Languages used for this project.
+	- In particular Python has been used exclusively for most of the logic in this project.
 - [Django 2.1.2](https://www.djangoproject.com/)
 	- Framework for this project.
 - [Bootstrap 4.0](https://getbootstrap.com/)
