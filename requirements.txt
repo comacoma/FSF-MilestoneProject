@@ -33,5 +33,5 @@ stripe==2.10.1
 tabulate==0.8.2
 terminaltables==3.1.0
 urllib3==1.23
-waitress==1.1.0
+waitress==1.4.1
 wcwidth==0.1.7
